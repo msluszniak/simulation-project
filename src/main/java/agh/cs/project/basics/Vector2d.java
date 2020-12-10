@@ -43,8 +43,8 @@ public class Vector2d {
         return new Vector2d(one, two);
     }
 
-    public Vector2d add(Vector2d other){
-        return new Vector2d(this.x + other.x, this.y + other.y);
+    public Vector2d add(Vector2d other, int moduloX, int moduloY){
+        return new Vector2d((this.x + other.x) % moduloX, (this.y + other.y) % moduloY);
     }
 
     public Vector2d subtract(Vector2d other){

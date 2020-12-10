@@ -8,7 +8,7 @@ import agh.cs.project.elements.IMapElement;
 
 import java.util.*;
 
-public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObserver {
+public abstract class AbstractWorldMap implements  IPositionChangeObserver {
 
     protected Map<Vector2d, IMapElement> elementsMap = new LinkedHashMap<>();
 
@@ -46,7 +46,4 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     @Override
     public abstract Vector2d getUpperRight();
 
-    public String toString(){
-        return new MapVisualizer(this).draw(getLowerLeft(), getUpperRight());
-    }
 }
