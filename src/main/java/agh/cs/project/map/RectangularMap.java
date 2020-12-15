@@ -16,13 +16,16 @@ public class RectangularMap {
     //Map<Vector2d, SortedSet<Animal>> animalList = new LinkedHashMap<>();
 
     //jak to powinno być napisane
-    public AnimalCollection animalCollection = new AnimalCollection();
-    public GrassCollection grassCollection = new GrassCollection();
-    private Vector2d lowerLeft;
-    private Vector2d upperRight;
-    private Vector2d lowerLeftJungle;
-    private Vector2d upperRightJungle;
-    int energyLoss;
+    private final AnimalCollection animalCollection = new AnimalCollection();
+    private final GrassCollection grassCollection = new GrassCollection();
+    private final Vector2d lowerLeft;
+    private final Vector2d upperRight;
+    private final Vector2d lowerLeftJungle;
+    private final Vector2d upperRightJungle;
+    private final Set<Vector2d> emptyPlacesJungle = new HashSet<>();
+    private final Set<Vector2d> emptyPlacesOutsideJungle = new HashSet<>();
+    private final int energyLoss;
+
 
     public RectangularMap(int width, int height, double jungleRatio, int energyLoss){
         this.lowerLeft = new Vector2d(0,0);
@@ -35,6 +38,9 @@ public class RectangularMap {
     }
     public Vector2d getUpperRight(){
         return upperRight;
+    }
+    public Vector2d getLowerLeft(){
+        return lowerLeft;
     }
 
 //    public boolean isInBounds(Vector2d position) {
@@ -52,6 +58,8 @@ public class RectangularMap {
         return this.energyLoss;
     }
 
+
+
     //tutaj trzeba będzie doprecyzować te funkcje aby można było z nich korzystać
     //public Object objectAt(Vector2d position){
     //    return elementsMap.get(position);
@@ -59,8 +67,46 @@ public class RectangularMap {
     //public boolean isOccupied(Vector2d position){
     //    return elementsMap.containsKey(position);
     //}
-    public void positionChanged(Vector2d oldPosition, Animal animal){
-        animalCollection.positionChangedElement(oldPosition, animal);
+
+    //tutaj póki co będę potrzebował jeszcze listy trawek dlatego muszę mieć position changed w RectangularMap
+
+//    public void positionChanged(Vector2d oldPosition, Animal animal){
+//        animalCollection.positionChangedElement(oldPosition, animal);
+//    }
+
+    public void energyChanged(Animal oldAnimal, Animal animal){
+        this.animalCollection.getAnimalMap().get(animal.getPosition()).remove(oldAnimal);
+        this.animalCollection.getAnimalMap().get(animal.getPosition()).add(animal);
+    }
+
+    //tutaj trzeba przekazywać jeszcze starego animala żeby dało się tak usunąć
+    public void positionChanged(Animal oldAnimal, Animal animal){
+        //System.out.println(animal.getPosition());
+        //System.out.println(oldAnimal.getPosition());
+        //IMapElement animal = elementsMap.get(oldPosition);
+        System.out.println(oldAnimal.getEnergy());
+        System.out.println(animal.getEnergy());
+        System.out.println(this.animalCollection.getAnimalMap().get(oldAnimal.getPosition()).remove(oldAnimal));
+        //jeśli nie ma zwierzątek na oldposition to usuwamy set
+        if(this.animalCollection.getAnimalMap().get(oldAnimal.getPosition()).isEmpty()){
+            this.animalCollection.getAnimalMap().remove(oldAnimal.getPosition());
+            if(!this.grassCollection.getGrassMap().containsKey(oldAnimal.getPosition())) {
+                if(oldAnimal.getPosition().isInArea(lowerLeftJungle, upperRightJungle)) {
+                    emptyPlacesJungle.add(oldAnimal.getPosition());
+                }
+                else{
+                    emptyPlacesOutsideJungle.add(oldAnimal.getPosition());
+                }
+            }
+        }
+        //teraz dodajemy, jeśli nie ma seta na daną pozycję
+        //to trzeba go utworzyć
+        Vector2d newPosition = animal.getPosition();
+        if(!this.animalCollection.getAnimalMap().containsKey(newPosition)){
+            SortedSet<Animal> animalsByEnergy = new TreeSet<>((animal1, animal2) -> animal1.getEnergy() >= animal2.getEnergy() ? 1 : -1);
+            this.animalCollection.getAnimalMap().put(newPosition, animalsByEnergy);
+        }
+        this.animalCollection.getAnimalMap().get(newPosition).add(animal);
     }
 
     public void addElement(IMapElement element){
@@ -70,6 +116,12 @@ public class RectangularMap {
         else {
             animalCollection.addAnimal(element);
             ((Animal) element).addObserver(this);
+        }
+        if(this.emptyPlacesJungle.contains(element.getPosition())){
+            this.emptyPlacesJungle.remove(element.getPosition());
+        }
+        if(this.emptyPlacesOutsideJungle.contains(element.getPosition())){
+            this.emptyPlacesOutsideJungle.remove(element.getPosition());
         }
     }
 
@@ -81,6 +133,42 @@ public class RectangularMap {
         else{
             animalCollection.removeAnimal(element);
         }
+        if(!animalCollection.getAnimalMap().containsKey(element.getPosition())
+        && !grassCollection.getGrassMap().containsKey(element.getPosition())){
+            if(element.getPosition().isInArea(lowerLeftJungle, upperRightJungle)){
+                emptyPlacesJungle.add(element.getPosition());
+            }
+            else{
+                emptyPlacesOutsideJungle.add(element.getPosition());
+            }
+        }
+    }
+
+    public Vector2d getProperPositionForBabyAnimal(Vector2d parentPosition){
+        Random random = new Random(42);
+        List <Vector2d> potentialPositions = new LinkedList<>();
+        List <Vector2d> potentialOccupiedPositions = new LinkedList<>();
+        for(int i =0; i < 8; i++){
+            if(grassCollection.getGrassMap().containsKey(parentPosition.add(MapDirection.NORTH.toEnum(i).toUnitVector()))){
+                continue;
+            }
+            if(animalCollection.getAnimalMap().containsKey(parentPosition.add(MapDirection.NORTH.toEnum(i).toUnitVector()))){
+                potentialOccupiedPositions.add(parentPosition.add(MapDirection.NORTH.toEnum(i).toUnitVector()));
+            }
+            potentialPositions.add(parentPosition.add(MapDirection.NORTH.toEnum(i).toUnitVector()));
+        }
+        if(!potentialPositions.isEmpty()){
+            return potentialPositions.get(random.nextInt(potentialPositions.size()));
+        }
+        return potentialOccupiedPositions.get(random.nextInt(potentialOccupiedPositions.size()));
+    }
+
+    public Set<Vector2d> getEmptyPlacesJungle(){
+        return this.emptyPlacesJungle;
+    }
+
+    public Set<Vector2d> getEmptyPlacesOutsideJungle(){
+        return this.emptyPlacesOutsideJungle;
     }
 
     public List<Animal> getListOfAnimals(){
@@ -90,5 +178,22 @@ public class RectangularMap {
     public List<Grass> getListOfGrasses(){
         return grassCollection.grassesToList();
     }
+
+    public Map<Vector2d, Grass> getGrassesMap(){
+        return this.grassCollection.getGrassMap();
+    }
+
+    public Map<Vector2d, SortedSet<Animal>> getAnimalMap(){
+        return this.animalCollection.getAnimalMap();
+    }
+
+    public GrassCollection getGrassCollection(){
+        return this.grassCollection;
+    }
+
+    public AnimalCollection getAnimalCollection(){
+        return this.animalCollection;
+    }
+
 
 }

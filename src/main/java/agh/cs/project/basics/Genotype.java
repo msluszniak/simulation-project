@@ -33,8 +33,9 @@ public class Genotype {
         }
         Collections.shuffle(parent.genotype, new Random());
         Collections.shuffle(this.genotype, new Random());
-        int firstGroupGensSize = random.nextInt(30);
-        int secondGroupGensSize = random.nextInt(31-firstGroupGensSize);
+        //tutaj trzeba ograniczać od dołu przez 1, a nie przez 0
+        int firstGroupGensSize = random.nextInt(22);
+        int secondGroupGensSize = random.nextInt(23-firstGroupGensSize);
         for(int i = 0; i < firstGroupGensSize; i++){
             temporaryList.add(parent.genotype.get(i));
         }
@@ -43,12 +44,12 @@ public class Genotype {
         }
         int x = random.nextInt(2);
         if(x == 0){
-            for(int i=firstGroupGensSize + secondGroupGensSize; i < 32; i++){
+            for(int i=firstGroupGensSize + secondGroupGensSize; i < 24; i++){
                 temporaryList.add(this.genotype.get(i));
             }
         }
         else{
-            for(int i=firstGroupGensSize + secondGroupGensSize; i < 32; i++){
+            for(int i=firstGroupGensSize + secondGroupGensSize; i < 24; i++){
                 temporaryList.add(parent.genotype.get(i));
             }
         }

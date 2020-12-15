@@ -1,6 +1,6 @@
 package agh.cs.project.elements;
 
-import agh.cs.project.map.AbstractWorldMap;
+//import agh.cs.project.map.AbstractWorldMap;
 import agh.cs.project.engine.IPositionChangeObserver;
 import agh.cs.project.basics.Vector2d;
 import agh.cs.project.map.RectangularMap;

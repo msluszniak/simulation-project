@@ -21,22 +21,44 @@ public class Animal implements IMapElement, IDeadAnimalOnPosition {
     private final int initialEnergy;
     private List<Animal> children = new ArrayList<>();
     private final List<RectangularMap> observerList = new ArrayList<>();
+    private final List<RectangularMap> energyObserverList = new ArrayList<>();
+    private static long generalId = 1;
+    private final long id;
 
     public Animal(RectangularMap map, Vector2d initPos, Genotype genotype, int energy, int birthDate){
         this.map = map;
         this.position = initPos;
-        this.addObserver(map);
+        //this.addObserver(map);
         this.genotype = genotype;
         this.energy = energy;
         this.birthDate = birthDate;
         this.deathDate = -1;
         this.initialEnergy = energy;
-
+        generalId++;
+        this.id = generalId;
         map.addElement(this);
     }
-    public void positionChanged(Vector2d oldPosition){
+    public Animal(Animal copy){
+        this.map = copy.map;
+        this.position = copy.position;
+        this.addObserver(map);
+        this.addEnergyObserver(map);
+        this.genotype = copy.genotype;
+        this.energy = copy.energy;
+        this.birthDate = copy.birthDate;
+        this.deathDate = copy.birthDate;
+        this.initialEnergy = copy.energy;
+        this.id = copy.id;
+    }
+    public void positionChanged(Animal oldAnimal){
         for (RectangularMap observer: observerList) {
-            observer.positionChanged(oldPosition, this);
+            observer.positionChanged(oldAnimal, this);
+        }
+    }
+
+    public void energyChanged(Animal oldAnimal){
+        for(RectangularMap energyObserver: energyObserverList){
+            energyObserver.energyChanged(oldAnimal, this);
         }
     }
 
@@ -50,15 +72,16 @@ public class Animal implements IMapElement, IDeadAnimalOnPosition {
 
     public int howLongAnimalLive(int date){
         if(this.deathDate == -1){
-            return this.deathDate - this.birthDate;
+            return date - this.birthDate;
         }
-        return date - this.birthDate;
+        return this.deathDate - this.birthDate;
     }
 
 
     public void addObserver(RectangularMap observer){
         observerList.add(observer);
     }
+    public void addEnergyObserver(RectangularMap energyObserver){energyObserverList.add(energyObserver);}
     void removeObserver(IPositionChangeObserver observer){
         for (int i = 0; i < observerList.size(); i++){
             if(observerList.get(i).equals(observer)){
@@ -73,17 +96,36 @@ public class Animal implements IMapElement, IDeadAnimalOnPosition {
         return position;
     }
 
+    public int getDeathDate(){
+        return this.deathDate;
+    }
+
     public int getEnergy(){ return this.energy; }
+
+    public List<Animal> getChildren(){ return this.children;}
+
+    public void changeEnergy(int change){
+        Animal oldAnimal = new Animal(this);
+        this.energy -= change;
+        this.energyChanged(oldAnimal);
+        //this.energy -= change;
+    }
+
 
     public void move() {
         Random random = new Random(42);
         int randomGen = random.nextInt(32);
         int gen = genotype.getGenotype().get(randomGen);
         MapDirection direction = MapDirection.NORTH.toEnum(gen); //troche śmiesznie wygląda
+        //dowiedzieć się czy tak przypisujemy oryginał czy kopie zmiennej;
         Vector2d oldPosition = position;
-        position = position.add(direction.toUnitVector(), map.getUpperRight().x,map.getUpperRight().y);
-        this.energy = this.energy - this.map.getEnergyLoss();
-        this.positionChanged(oldPosition);
+        //tutaj poprawianko leci
+        Animal oldAnimal = new Animal(this);
+        //this.changeEnergy(this.map.getEnergyLoss());
+        position = position.add(direction.toUnitVector());
+        position = position.getCorrectPosition(map.getLowerLeft(), map.getUpperRight());
+        this.positionChanged(oldAnimal);
+        this.changeEnergy(this.map.getEnergyLoss());
     }
 
     //jeśli nie mogą się rozmnożyć, to wzracam nulla, uważać na to
