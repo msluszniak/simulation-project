@@ -15,25 +15,26 @@ public class Engine {
     private RectangularMap map;
     private int initialEnergy;
     private int initialNumberOfAnimals;
-    private int numberOfEpochs;
     private int actualDate = 0;
     private int energyFromGrass;
-    private Random random = new Random(42);
+    private int energyLoss;
+    private Random random = new Random();
 
-    public Engine(int width, int height, int jungleRation, int initialEnergy,
-                  int initialNumberOfAnimals, int numberOfEpochs, int energyFromGrass, int energyLoss) {
-        this.map = new RectangularMap(width, height, jungleRation, energyLoss);
-        this.initialEnergy = initialEnergy;
+    public Engine(int width, int height, double jungleRation, int initialEnergy,
+                  int initialNumberOfAnimals, int energyFromGrass, int energyLoss) {
+        this.map = new RectangularMap(width, height, jungleRation, initialEnergy);
+        //this.initialEnergy = initialEnergy;
         this.initialNumberOfAnimals = initialNumberOfAnimals;
-        this.numberOfEpochs = numberOfEpochs;
         this.energyFromGrass = energyFromGrass;
+        this.energyLoss = energyLoss;
     }
 
     public void spawnInitialAnimals() {
         for (int i = 0; i < initialNumberOfAnimals; i++) {
             Vector2d initPosition = this.map.initializeRandomPositionInBounds();
             Genotype genotype = new Genotype();
-            new Animal(this.map, initPosition, genotype, this.initialEnergy, 0);
+            Animal animal = new Animal(this.map, initPosition, genotype, this.map.getInitialEnergy(), 0);
+            map.addElement(animal);
         }
     }
 
@@ -49,11 +50,12 @@ public class Engine {
     public void moveAllAnimals() {
         List<Animal> animalList = this.map.getListOfAnimals();
         for (Animal animal : animalList) {
-            animal.move();
+            animal.move(energyLoss);
         }
     }
 
-    public void grassEating(){
+    //tutaj trzeba usuwać silne zwierzęta przy wyciąganiu z setu, a następnie je dodać spowrotem z nową energią
+    public void grassEating() {
         //List<Animal> animalList = this.map.getListOfAnimals();
         //Map<Vector2d, SortedSet<Animal>> animalList = this.map.getAnimalMap();
         //Map<Vector2d, Set<Grass>> grassesList = this.map.getGrassesMap();
@@ -63,63 +65,76 @@ public class Engine {
         for (SortedSet<Animal> set : animalCollection.getAnimalMap().values()) {
             List<Animal> strongestAnimals = new LinkedList<>();
             int strongestAnimalEnergy = ((Animal) set.first()).getEnergy();
-            for(Object strongAnimal : set) {
+            for (Object strongAnimal : set) {
                 if (((Animal) strongAnimal).getEnergy() == strongestAnimalEnergy) {
                     strongestAnimals.add((Animal) strongAnimal);
                 } else break;
             }
-            if(strongestAnimals.isEmpty()) continue;
+            if (strongestAnimals.isEmpty()) continue;
 
             Vector2d position = strongestAnimals.get(0).getPosition();
-            if (!grassCollection.getGrassMap().containsKey(position)) {
-                for(Animal strongAnimal : strongestAnimals){
+            if (grassCollection.getGrassMap().containsKey(position)) {
+                //System.out.println("haha");
+                for (Animal strongAnimal : strongestAnimals) {
                     //minus bo w changeEnergy odejmujemy
-                    strongAnimal.changeEnergy(-energyFromGrass/strongestAnimals.size());
+                    strongAnimal.changeEnergy(-energyFromGrass / strongestAnimals.size());
                 }
-            }
-            for(Animal strongAnimal : strongestAnimals){
-                set.add(strongAnimal);
-            }
-            grassCollection.removeGrass( grassCollection.getGrassMap().get(position));
-        }
-    }
 
-    public void reproduceAnimal(){
-        AnimalCollection animalCollection = this.map.getAnimalCollection();
-        for (SortedSet<Animal> set : animalCollection.getAnimalMap().values()){
-            if(set.size() < 2) continue;
-            int counter = 0;
-            List<Animal> animals = new LinkedList();
-            for(Animal animal : set){
-                animals.add(animal);
-                counter += 1;
-                if(counter == 2) break;
-            }
-            Animal animal = animals.get(0);
-            Vector2d babyPosition = map.getProperPositionForBabyAnimal(animal.getPosition());
-            Animal kid = animal.reproduce(animals.get(1), this.actualDate, babyPosition);
-            if((kid != null)){
-                this.map.addElement((IMapElement) kid);
+                for (Animal strongAnimal : strongestAnimals) {
+                    set.add(strongAnimal);
+                }
+                map.removeElement(grassCollection.getGrassMap().get(position));
             }
         }
     }
 
-    public void placeNewGrasses(){
-        LinkedList<Vector2d> emptyPlacesJungle = new LinkedList<Vector2d>(map.getEmptyPlacesJungle());
-        LinkedList<Vector2d> emptyPlacesOutsideJungle = new LinkedList<Vector2d>(map.getEmptyPlacesOutsideJungle());
-        if(emptyPlacesJungle.size() > 0){
+
+    public void reproduceAnimal() {
+        List<Animal> animalList = new LinkedList<>();
+        for (Vector2d position : this.map.getAnimalCollection().getAnimalMap().keySet()) {
+            List<Animal> parents = this.map.getAnimalCollection().getParents(position);
+            if (parents != null) {
+                Animal kid = parents.get(0).reproduce(parents.get(1), this.actualDate);
+                if (kid != null) animalList.add(kid);
+            }
+        }
+        for (Animal animal : animalList) {
+            this.map.addElement(animal);
+        }
+    }
+
+    public void placeNewGrasses() {
+        LinkedList<Vector2d> emptyPlacesJungle = new LinkedList<>(map.getEmptyPlacesJungle());
+        LinkedList<Vector2d> emptyPlacesOutsideJungle = new LinkedList<>(map.getEmptyPlacesOutsideJungle());
+        if (emptyPlacesJungle.size() > 0) {
             this.map.addElement(new Grass(map, emptyPlacesJungle.get(random.nextInt(emptyPlacesJungle.size()))));
         }
-        if(emptyPlacesOutsideJungle.size() > 0) {
+        if (emptyPlacesOutsideJungle.size() > 0) {
             this.map.addElement(new Grass(map, emptyPlacesOutsideJungle.get(random.nextInt(emptyPlacesOutsideJungle.size()))));
         }
     }
 
-    public void changeDate(){
+    public void step() {
+        this.removeDeadAnimals();
+//        System.out.println("removeDeadAnimals");
+        this.moveAllAnimals();
+//        System.out.println("moveAllAnimals");
+        this.grassEating();
+//        System.out.println("grassEating");
+        this.reproduceAnimal();
+//        System.out.println("reproduceAnimal");
+        this.placeNewGrasses();
+        //System.out.println("placeNewGrasses");
+        this.changeDate();
+        //System.out.println("changeDate");
+
+    }
+
+    public void changeDate() {
         this.actualDate++;
     }
 
-    public RectangularMap getMap(){
+    public RectangularMap getMap() {
         return this.map;
     }
 

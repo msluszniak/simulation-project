@@ -18,25 +18,26 @@ public class Animal implements IMapElement, IDeadAnimalOnPosition {
     private RectangularMap map;
     private int birthDate;
     private int deathDate;
-    private final int initialEnergy;
+    //private final int initialEnergy;
     private List<Animal> children = new ArrayList<>();
     private final List<RectangularMap> observerList = new ArrayList<>();
     private final List<RectangularMap> energyObserverList = new ArrayList<>();
-    private static long generalId = 1;
-    private final long id;
+    private static int generalId = 1;
+    private final int id;
 
     public Animal(RectangularMap map, Vector2d initPos, Genotype genotype, int energy, int birthDate){
         this.map = map;
         this.position = initPos;
         //this.addObserver(map);
+        //this.addEnergyObserver(map);
         this.genotype = genotype;
         this.energy = energy;
         this.birthDate = birthDate;
         this.deathDate = -1;
-        this.initialEnergy = energy;
+        //this.initialEnergy = energy;
         generalId++;
         this.id = generalId;
-        map.addElement(this);
+        //map.addElement(this);
     }
     public Animal(Animal copy){
         this.map = copy.map;
@@ -47,7 +48,7 @@ public class Animal implements IMapElement, IDeadAnimalOnPosition {
         this.energy = copy.energy;
         this.birthDate = copy.birthDate;
         this.deathDate = copy.birthDate;
-        this.initialEnergy = copy.energy;
+        //this.initialEnergy = copy.energy;
         this.id = copy.id;
     }
     public void positionChanged(Animal oldAnimal){
@@ -91,6 +92,10 @@ public class Animal implements IMapElement, IDeadAnimalOnPosition {
         }
     }
 
+    public RectangularMap getMap(){
+        return this.map;
+    }
+
     @Override
     public Vector2d getPosition() {
         return position;
@@ -104,6 +109,10 @@ public class Animal implements IMapElement, IDeadAnimalOnPosition {
 
     public List<Animal> getChildren(){ return this.children;}
 
+    public int getId(){
+        return this.id;
+    }
+
     public void changeEnergy(int change){
         Animal oldAnimal = new Animal(this);
         this.energy -= change;
@@ -112,7 +121,7 @@ public class Animal implements IMapElement, IDeadAnimalOnPosition {
     }
 
 
-    public void move() {
+    public void move(int energyLoss) {
         Random random = new Random(42);
         int randomGen = random.nextInt(32);
         int gen = genotype.getGenotype().get(randomGen);
@@ -125,17 +134,18 @@ public class Animal implements IMapElement, IDeadAnimalOnPosition {
         position = position.add(direction.toUnitVector());
         position = position.getCorrectPosition(map.getLowerLeft(), map.getUpperRight());
         this.positionChanged(oldAnimal);
-        this.changeEnergy(this.map.getEnergyLoss());
+        this.changeEnergy(energyLoss);
     }
 
     //jeśli nie mogą się rozmnożyć, to wzracam nulla, uważać na to
-    public Animal reproduce(Animal parent, int date, Vector2d initPos){
-        if(this.energy > this.initialEnergy/2 && parent.energy > parent.initialEnergy){
+    public Animal reproduce(Animal parent, int date){
+        if(this.energy > this.map.getInitialEnergy()/2 && parent.energy > parent.map.getInitialEnergy()/2){
             int kidEnergy = this.energy/4 + parent.energy/4;
             this.energy = this.energy - this.energy/4;
             parent.energy = parent.energy - parent.energy/4;
+            Vector2d babyPosition = map.getProperPositionForBabyAnimal(this.getPosition());
             Genotype kidGenotype = this.genotype.mixGenotypes(parent.genotype);
-            Animal kid =  new Animal(this.map, initPos, kidGenotype, kidEnergy, date);
+            Animal kid =  new Animal(this.map, babyPosition, kidGenotype, kidEnergy, date);
             this.children.add(kid);
             parent.children.add(kid);
             return kid;

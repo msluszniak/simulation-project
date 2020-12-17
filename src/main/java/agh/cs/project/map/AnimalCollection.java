@@ -2,48 +2,61 @@ package agh.cs.project.map;
 
 import agh.cs.project.basics.Vector2d;
 import agh.cs.project.elements.Animal;
-import agh.cs.project.elements.Grass;
 import agh.cs.project.elements.IMapElement;
 
 import java.util.*;
 
 public class AnimalCollection {
-    private Map<Vector2d, SortedSet<Animal>> animalList = new LinkedHashMap<>();
-    //private RectangularMap map;
+    private Map<Vector2d, SortedSet<Animal>> animals = new HashMap<>();
 
-    public AnimalCollection(){}
-    public AnimalCollection(Map<Vector2d, SortedSet<Animal>> animalList) {
-        this.animalList = animalList;
-        //this.map = map;
+    public AnimalCollection() {
+    }
+
+    public AnimalCollection(Map<Vector2d, SortedSet<Animal>> animals) {
+        this.animals = animals;
     }
 
     public List<Animal> animalsToList() {
         List<Animal> list = new LinkedList<>();
-        for (SortedSet<Animal> sortedSet : animalList.values()) {
+        for (SortedSet<Animal> sortedSet : animals.values()) {
             list.addAll(sortedSet);
         }
         return list;
     }
 
-    public Map<Vector2d, SortedSet<Animal>> getAnimalMap(){
-        return this.animalList;
+    public Map<Vector2d, SortedSet<Animal>> getAnimalMap() {
+        return this.animals;
     }
 
-    public void addAnimal(IMapElement element){
-        if (!animalList.containsKey(element.getPosition())) {
-            SortedSet<Animal> animalsByEnergy = new TreeSet<>((animal1, animal2) -> animal1.getEnergy() - animal2.getEnergy());
-            animalList.put(element.getPosition(), animalsByEnergy);
+    public void addAnimal(IMapElement element) {
+        if (!animals.containsKey(element.getPosition())) {
+            SortedSet<Animal> animalsByEnergy = new TreeSet<>((animal1, animal2) -> {
+                int energy1 = animal1.getEnergy();
+                int energy2 = animal2.getEnergy();
+                if (energy1 > energy2) return 1;
+                if (energy2 > energy1) return -1;
+                if (animal1.getId() < animal2.getId()) return 1;
+                else if (animal1.getId() > animal2.getId()) return -1;
+                return 0;
+            });
+            animals.put(element.getPosition(), animalsByEnergy);
         }
-        animalList.get(element.getPosition()).add( (Animal) element);
-        //((Animal) element).addObserver(map);
+        animals.get(element.getPosition()).add((Animal) element);
     }
 
-    public void removeAnimal(IMapElement element){
+    public void removeAnimal(IMapElement element) {
         Vector2d actualPosition = element.getPosition();
-        animalList.get(actualPosition).remove(element);
-        if (animalList.get(actualPosition).isEmpty()) {
-            animalList.remove(actualPosition);
+        System.out.println(animals.get(actualPosition).remove(element));
+        if (animals.get(actualPosition).isEmpty()) {
+            animals.remove(actualPosition);
         }
+    }
+
+    public List<Animal> getParents(Vector2d position) {
+        SortedSet<Animal> set =  animals.get(position);
+        if (set.size() < 2) return null;
+        Iterator<Animal> iterator = set.iterator();
+        return List.of(iterator.next(), iterator.next());
     }
 
 //    public void positionChangedElement(Vector2d oldPosition, Animal animal){

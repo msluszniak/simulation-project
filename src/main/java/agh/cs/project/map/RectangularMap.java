@@ -22,26 +22,41 @@ public class RectangularMap {
     private final Vector2d upperRight;
     private final Vector2d lowerLeftJungle;
     private final Vector2d upperRightJungle;
+    private final int initialEnergy;
     private final Set<Vector2d> emptyPlacesJungle = new HashSet<>();
     private final Set<Vector2d> emptyPlacesOutsideJungle = new HashSet<>();
-    private final int energyLoss;
+
+    //private final int energyLoss;
 
 
-    public RectangularMap(int width, int height, double jungleRatio, int energyLoss){
+    public RectangularMap(int width, int height, double jungleRatio, int initialEnergy){
         this.lowerLeft = new Vector2d(0,0);
         this.upperRight = new Vector2d(width,height);
-        int jungleX = (int) jungleRatio * width;
-        int jungleY = (int) jungleRatio * height;
+        this.initialEnergy = initialEnergy;
+        int jungleX = (int) (jungleRatio * width);
+        int jungleY = (int) (jungleRatio * height);
         this.lowerLeftJungle = new Vector2d( width/2 - jungleX/2,  height/2 - jungleY/2);
         this.upperRightJungle = new Vector2d( width/2 + jungleX/2,  height/2 + jungleY/2);
-        this.energyLoss = energyLoss;
+        for(int i = lowerLeft.x; i < upperRight.x; i++){
+            for(int j = lowerLeft.y; j < upperRight.y; j++){
+                Vector2d position = new Vector2d(i, j);
+                if (this.isInJungle(position)){
+                    emptyPlacesJungle.add(position);
+                }
+                emptyPlacesOutsideJungle.add(position);
+            }
+        }
+        //this.energyLoss = energyLoss;
     }
+    public int getInitialEnergy(){ return initialEnergy;}
     public Vector2d getUpperRight(){
         return upperRight;
     }
     public Vector2d getLowerLeft(){
         return lowerLeft;
     }
+    public Vector2d getLowerLeftJungle(){return lowerLeftJungle;}
+    public Vector2d getUpperRightJungle(){return upperRightJungle;}
 
 //    public boolean isInBounds(Vector2d position) {
 //        return lowerLeft.precedes(position) && upperRight.follows(position);
@@ -54,9 +69,9 @@ public class RectangularMap {
         return new Vector2d(x, y);
     }
 
-    public int getEnergyLoss(){
-        return this.energyLoss;
-    }
+//    public int getEnergyLoss(){
+//        return this.energyLoss;
+//    }
 
 
 
@@ -84,9 +99,13 @@ public class RectangularMap {
         //System.out.println(animal.getPosition());
         //System.out.println(oldAnimal.getPosition());
         //IMapElement animal = elementsMap.get(oldPosition);
-        System.out.println(oldAnimal.getEnergy());
-        System.out.println(animal.getEnergy());
-        System.out.println(this.animalCollection.getAnimalMap().get(oldAnimal.getPosition()).remove(oldAnimal));
+        //System.out.println(oldAnimal.getEnergy());
+        //System.out.println(animal.getEnergy());
+//        System.out.println(this.animalCollection.getAnimalMap().get(oldAnimal.getPosition()).first().getId());
+//        System.out.println(this.animalCollection.getAnimalMap().get(oldAnimal.getPosition()).first().getEnergy());
+//        System.out.println(oldAnimal.getId());
+//        System.out.println(oldAnimal.getEnergy());
+        this.animalCollection.getAnimalMap().get(oldAnimal.getPosition()).remove(oldAnimal);
         //jeśli nie ma zwierzątek na oldposition to usuwamy set
         if(this.animalCollection.getAnimalMap().get(oldAnimal.getPosition()).isEmpty()){
             this.animalCollection.getAnimalMap().remove(oldAnimal.getPosition());
@@ -133,13 +152,13 @@ public class RectangularMap {
         else{
             animalCollection.removeAnimal(element);
         }
-        if(!animalCollection.getAnimalMap().containsKey(element.getPosition())
-        && !grassCollection.getGrassMap().containsKey(element.getPosition())){
-            if(element.getPosition().isInArea(lowerLeftJungle, upperRightJungle)){
-                emptyPlacesJungle.add(element.getPosition());
+        if(!animalCollection.getAnimalMap().containsKey(actualPosition)
+        && !grassCollection.getGrassMap().containsKey(actualPosition)){
+            if(actualPosition.isInArea(lowerLeftJungle, upperRightJungle)){
+                emptyPlacesJungle.add(actualPosition);
             }
             else{
-                emptyPlacesOutsideJungle.add(element.getPosition());
+                emptyPlacesOutsideJungle.add(actualPosition);
             }
         }
     }
@@ -193,6 +212,14 @@ public class RectangularMap {
 
     public AnimalCollection getAnimalCollection(){
         return this.animalCollection;
+    }
+
+    public boolean isInJungle(Vector2d position){
+        if(position.x >= this.lowerLeftJungle.x && position.x <= this.upperRightJungle.x &&
+                position.y >= this.lowerLeftJungle.y && position.y <= this.upperRightJungle.y){
+            return true;
+        }
+        return false;
     }
 
 

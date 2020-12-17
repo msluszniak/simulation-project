@@ -10,23 +10,28 @@ import org.junit.jupiter.api.Assertions;
 import java.util.List;
 
 public class AnimalTest {
-    RectangularMap map = new RectangularMap(300, 400, 0.2, 5);
+    RectangularMap map = new RectangularMap(300, 400, 0.2, 100);
     Animal animal = new Animal(map, new Vector2d(100,200), new Genotype(), 100, 0);
 
     @Test
     public void isAlreadyDeadTestOfAliveAnimal(){
-       Assertions.assertFalse(animal.isAlreadyDead(2));
+        animal.getMap().addElement(animal);
+        Assertions.assertFalse(animal.isAlreadyDead(2));
     }
 
     @Test
     public void isAlreadyDeadTestOfDeadAnimal(){
+        animal.getMap().addElement(animal);
         Animal deadAnimal = new Animal(map, new Vector2d(100,200), new Genotype(), -5, 0);
+        animal.getMap().addElement(deadAnimal);
         Assertions.assertTrue(deadAnimal.isAlreadyDead(2));
     }
 
     @Test
     public void isDeathDateUpdated(){
+        animal.getMap().addElement(animal);
         Animal deadAnimal = new Animal(map, new Vector2d(100,200), new Genotype(), -5, 0);
+        animal.getMap().addElement(deadAnimal);
         deadAnimal.isAlreadyDead(2);
         Assertions.assertEquals(2, deadAnimal.getDeathDate());
     }
@@ -38,25 +43,42 @@ public class AnimalTest {
 
     @Test
     public void moveTestIfAnimalChangePosition(){
+        animal.getMap().addElement(animal);
         Vector2d animalPosition = animal.getPosition();
-        animal.move();
+        animal.move(5);
         Assertions.assertNotEquals(animalPosition, animal.getPosition());
     }
 
     @Test
     public void moveTestIfAnimalChangeEnergy(){
+        animal.getMap().addElement(animal);
         int animalEnergy = animal.getEnergy();
-        animal.move();
+        animal.move(5);
         Assertions.assertEquals(95, animal.getEnergy());
         Assertions.assertEquals(95, map.getAnimalCollection().getAnimalMap().get(animal.getPosition()).first().getEnergy());
     }
 
     @Test
     public void moveTestIfAnimalPositionOnMapUpdate(){
+        animal.getMap().addElement(animal);
         Vector2d oldPosition = animal.getPosition();
-        animal.move();
+        animal.move(5);
         Assertions.assertFalse(map.getAnimalCollection().getAnimalMap().containsKey(oldPosition));
         Assertions.assertFalse(map.getAnimalCollection().getAnimalMap().get(animal.getPosition()).isEmpty());
+    }
+
+
+    @Test
+    public void reproduceAnimalTest(){
+        animal.getMap().addElement(animal);
+        Animal newAnimal = new Animal(map, new Vector2d(100,200), new Genotype(), 120, 0);
+        animal.getMap().addElement(newAnimal);
+        Animal kid = animal.reproduce(newAnimal, 5);
+        animal.getMap().addElement(kid);
+        Assertions.assertEquals(3, map.getListOfAnimals().size());
+        Vector2d position = animal.getPosition();
+        animal.move(5);
+        Assertions.assertNotEquals(position, animal.getPosition());
     }
 
 }

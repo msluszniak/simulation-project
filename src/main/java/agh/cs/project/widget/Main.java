@@ -1,5 +1,7 @@
 package agh.cs.project.widget;
 
+import agh.cs.project.engine.Engine;
+import agh.cs.project.engine.JsonParser;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -7,14 +9,20 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
+import java.io.FileNotFoundException;
+
 public class Main extends Application {
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws FileNotFoundException {
+        JsonParser parameters = JsonParser.loadParametersFromFile();
+        Engine engine = new Engine(parameters.getWidth(), parameters.getHeight(), parameters.getJungleRatio(), parameters.getStartEnergy(), parameters.getInitialNumberOfAnimals(), parameters.getPlantEnergy(), parameters.getMoveEnergy());
+
 
         GridPane aPane = new GridPane();
         aPane.setPadding(new Insets(10, 10, 10, 10));
         aPane.setHgap(1);
         aPane.setVgap(1);
+
         for (int row = 1; row <= 6; row++)
             for (int col = 1; col <= 8; col++) {
                 Button b = new Button();
