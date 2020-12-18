@@ -16,6 +16,10 @@ public class AnimalCollection {
         this.animals = animals;
     }
 
+    public boolean containsKey(Vector2d position){
+        return animals.containsKey(position);
+    }
+
     public List<Animal> animalsToList() {
         List<Animal> list = new LinkedList<>();
         for (SortedSet<Animal> sortedSet : animals.values()) {
@@ -46,9 +50,22 @@ public class AnimalCollection {
 
     public void removeAnimal(IMapElement element) {
         Vector2d actualPosition = element.getPosition();
-        System.out.println(animals.get(actualPosition).remove(element));
-        if (animals.get(actualPosition).isEmpty()) {
-            animals.remove(actualPosition);
+        if (animals.containsKey(actualPosition)) {
+            animals.get(actualPosition).remove(element);
+
+            if (animals.get(actualPosition).isEmpty()) {
+                animals.remove(actualPosition);
+            }
+        }
+    }
+
+    public void removeAnimalByPositionOld(Vector2d oldPosition, Animal animal){
+        if (animals.containsKey(oldPosition)) {
+            animals.get(oldPosition).remove(animal);
+
+            if (animals.get(oldPosition).isEmpty()) {
+                animals.remove(oldPosition);
+            }
         }
     }
 
@@ -58,22 +75,5 @@ public class AnimalCollection {
         Iterator<Animal> iterator = set.iterator();
         return List.of(iterator.next(), iterator.next());
     }
-
-//    public void positionChangedElement(Vector2d oldPosition, Animal animal){
-//        //IMapElement animal = elementsMap.get(oldPosition);
-//        animalList.get(oldPosition).remove(animal);
-//        //jeśli nie ma zwierzątek na oldposition to usuwamy set
-//        if(animalList.get(oldPosition).isEmpty()){
-//            animalList.remove(oldPosition);
-//        }
-//        //teraz dodajemy, jeśli nie ma seta na daną pozycję
-//        //to trzeba go utworzyć
-//        Vector2d newPosition = animal.getPosition();
-//        if(!animalList.containsKey(newPosition)){
-//            SortedSet<Animal> animalsByEnergy = new TreeSet<>((animal1, animal2) -> animal1.getEnergy() >= animal2.getEnergy() ? 1 : -1);
-//            animalList.put(newPosition, animalsByEnergy);
-//        }
-//        animalList.get(newPosition).add(animal);
-//    }
 
 }

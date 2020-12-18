@@ -12,7 +12,6 @@ public class JsonParserTest {
     public JsonParserTest() throws FileNotFoundException {
     }
 
-
     @Test
     public void checkWidth(){
         Assertions.assertEquals(15, parameters.getWidth());

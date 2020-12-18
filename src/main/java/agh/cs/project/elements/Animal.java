@@ -8,6 +8,7 @@ import agh.cs.project.map.MapDirection;
 import agh.cs.project.map.RectangularMap;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -19,7 +20,7 @@ public class Animal implements IMapElement, IDeadAnimalOnPosition {
     private int birthDate;
     private int deathDate;
     //private final int initialEnergy;
-    private List<Animal> children = new ArrayList<>();
+    private List<Animal> children = new LinkedList<>();
     private final List<RectangularMap> observerList = new ArrayList<>();
     private final List<RectangularMap> energyObserverList = new ArrayList<>();
     private static int generalId = 1;
@@ -51,9 +52,9 @@ public class Animal implements IMapElement, IDeadAnimalOnPosition {
         //this.initialEnergy = copy.energy;
         this.id = copy.id;
     }
-    public void positionChanged(Animal oldAnimal){
+    public void positionChanged(Vector2d oldPosition){
         for (RectangularMap observer: observerList) {
-            observer.positionChanged(oldAnimal, this);
+            observer.positionChanged(oldPosition, this);
         }
     }
 
@@ -92,6 +93,12 @@ public class Animal implements IMapElement, IDeadAnimalOnPosition {
         }
     }
 
+    public ArrayList<Integer> getGenotype(){
+        return this.genotype.getGenotype();
+    }
+
+    public int getBirthDate(){return this.birthDate;}
+
     public RectangularMap getMap(){
         return this.map;
     }
@@ -122,18 +129,14 @@ public class Animal implements IMapElement, IDeadAnimalOnPosition {
 
 
     public void move(int energyLoss) {
-        Random random = new Random(42);
+        Random random = new Random();
         int randomGen = random.nextInt(32);
         int gen = genotype.getGenotype().get(randomGen);
-        MapDirection direction = MapDirection.NORTH.toEnum(gen); //troche śmiesznie wygląda
-        //dowiedzieć się czy tak przypisujemy oryginał czy kopie zmiennej;
+        MapDirection direction = MapDirection.values()[gen];
         Vector2d oldPosition = position;
-        //tutaj poprawianko leci
-        Animal oldAnimal = new Animal(this);
-        //this.changeEnergy(this.map.getEnergyLoss());
-        position = position.add(direction.toUnitVector());
-        position = position.getCorrectPosition(map.getLowerLeft(), map.getUpperRight());
-        this.positionChanged(oldAnimal);
+        position = position.add(direction.toUnitVector()).getCorrectPosition(map.getLowerLeft(), map.getUpperRight());
+        //position = position.getCorrectPosition(map.getLowerLeft(), map.getUpperRight());
+        this.positionChanged(oldPosition);
         this.changeEnergy(energyLoss);
     }
 
@@ -143,7 +146,7 @@ public class Animal implements IMapElement, IDeadAnimalOnPosition {
             int kidEnergy = this.energy/4 + parent.energy/4;
             this.energy = this.energy - this.energy/4;
             parent.energy = parent.energy - parent.energy/4;
-            Vector2d babyPosition = map.getProperPositionForBabyAnimal(this.getPosition());
+            Vector2d babyPosition = map.getProperPositionForBabyAnimal(this.getPosition()).getCorrectPosition(map.getLowerLeft(), map.getUpperRight());
             Genotype kidGenotype = this.genotype.mixGenotypes(parent.genotype);
             Animal kid =  new Animal(this.map, babyPosition, kidGenotype, kidEnergy, date);
             this.children.add(kid);

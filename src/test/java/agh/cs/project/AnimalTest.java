@@ -4,10 +4,8 @@ import agh.cs.project.basics.Genotype;
 import agh.cs.project.basics.Vector2d;
 import agh.cs.project.elements.Animal;
 import agh.cs.project.map.RectangularMap;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
-
-import java.util.List;
+import org.junit.jupiter.api.Test;
 
 public class AnimalTest {
     RectangularMap map = new RectangularMap(300, 400, 0.2, 100);
@@ -52,7 +50,6 @@ public class AnimalTest {
     @Test
     public void moveTestIfAnimalChangeEnergy(){
         animal.getMap().addElement(animal);
-        int animalEnergy = animal.getEnergy();
         animal.move(5);
         Assertions.assertEquals(95, animal.getEnergy());
         Assertions.assertEquals(95, map.getAnimalCollection().getAnimalMap().get(animal.getPosition()).first().getEnergy());

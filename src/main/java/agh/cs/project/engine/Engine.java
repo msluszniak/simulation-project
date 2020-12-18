@@ -4,26 +4,28 @@ import agh.cs.project.basics.Genotype;
 import agh.cs.project.basics.Vector2d;
 import agh.cs.project.elements.Animal;
 import agh.cs.project.elements.Grass;
-import agh.cs.project.elements.IMapElement;
 import agh.cs.project.map.AnimalCollection;
 import agh.cs.project.map.GrassCollection;
 import agh.cs.project.map.RectangularMap;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+import java.util.SortedSet;
 
 public class Engine {
-    private RectangularMap map;
-    private int initialEnergy;
-    private int initialNumberOfAnimals;
+    private final RectangularMap map;
+    private final int initialNumberOfAnimals;
     private int actualDate = 0;
-    private int energyFromGrass;
-    private int energyLoss;
-    private Random random = new Random();
+    private final int energyFromGrass;
+    private final int energyLoss;
+    private final Random random = new Random();
+    private int cumulativeDeadAnimalsDays = 0;
+    private int numberOfDeadAnimals = 0;
 
     public Engine(int width, int height, double jungleRation, int initialEnergy,
                   int initialNumberOfAnimals, int energyFromGrass, int energyLoss) {
         this.map = new RectangularMap(width, height, jungleRation, initialEnergy);
-        //this.initialEnergy = initialEnergy;
         this.initialNumberOfAnimals = initialNumberOfAnimals;
         this.energyFromGrass = energyFromGrass;
         this.energyLoss = energyLoss;
@@ -42,7 +44,9 @@ public class Engine {
         List<Animal> animalList = this.map.getListOfAnimals();
         for (Animal animal : animalList) {
             if (animal.isAlreadyDead(this.actualDate)) {
-                this.map.removeElement((IMapElement) animal);
+                this.numberOfDeadAnimals++;
+                this.cumulativeDeadAnimalsDays += this.actualDate - animal.getBirthDate();
+                this.map.removeElement(animal);
             }
         }
     }
@@ -56,15 +60,12 @@ public class Engine {
 
     //tutaj trzeba usuwać silne zwierzęta przy wyciąganiu z setu, a następnie je dodać spowrotem z nową energią
     public void grassEating() {
-        //List<Animal> animalList = this.map.getListOfAnimals();
-        //Map<Vector2d, SortedSet<Animal>> animalList = this.map.getAnimalMap();
-        //Map<Vector2d, Set<Grass>> grassesList = this.map.getGrassesMap();
         GrassCollection grassCollection = this.map.getGrassCollection();
         AnimalCollection animalCollection = this.map.getAnimalCollection();
 
         for (SortedSet<Animal> set : animalCollection.getAnimalMap().values()) {
             List<Animal> strongestAnimals = new LinkedList<>();
-            int strongestAnimalEnergy = ((Animal) set.first()).getEnergy();
+            int strongestAnimalEnergy = set.first().getEnergy();
             for (Object strongAnimal : set) {
                 if (((Animal) strongAnimal).getEnergy() == strongestAnimalEnergy) {
                     strongestAnimals.add((Animal) strongAnimal);
@@ -74,15 +75,12 @@ public class Engine {
 
             Vector2d position = strongestAnimals.get(0).getPosition();
             if (grassCollection.getGrassMap().containsKey(position)) {
-                //System.out.println("haha");
                 for (Animal strongAnimal : strongestAnimals) {
                     //minus bo w changeEnergy odejmujemy
                     strongAnimal.changeEnergy(-energyFromGrass / strongestAnimals.size());
                 }
 
-                for (Animal strongAnimal : strongestAnimals) {
-                    set.add(strongAnimal);
-                }
+                set.addAll(strongestAnimals);
                 map.removeElement(grassCollection.getGrassMap().get(position));
             }
         }
@@ -116,18 +114,11 @@ public class Engine {
 
     public void step() {
         this.removeDeadAnimals();
-//        System.out.println("removeDeadAnimals");
         this.moveAllAnimals();
-//        System.out.println("moveAllAnimals");
         this.grassEating();
-//        System.out.println("grassEating");
         this.reproduceAnimal();
-//        System.out.println("reproduceAnimal");
         this.placeNewGrasses();
-        //System.out.println("placeNewGrasses");
         this.changeDate();
-        //System.out.println("changeDate");
-
     }
 
     public void changeDate() {
@@ -137,6 +128,10 @@ public class Engine {
     public RectangularMap getMap() {
         return this.map;
     }
+
+    public int getNumberOfDeadAnimals(){return numberOfDeadAnimals;}
+
+    public int getCumulativeDeadAnimalsDays(){return cumulativeDeadAnimalsDays;}
 
 
 }

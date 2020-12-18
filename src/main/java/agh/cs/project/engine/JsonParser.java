@@ -1,12 +1,9 @@
 package agh.cs.project.engine;
 
-
 import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.ObjectInputFilter;
 
 public class JsonParser {
 
@@ -20,8 +17,7 @@ public class JsonParser {
 
     public static JsonParser loadParametersFromFile() throws FileNotFoundException, IllegalArgumentException {
         Gson gson = new Gson();
-        JsonParser parameters = gson.fromJson(new FileReader("\\Users\\DELL\\IdeaProjects\\ProjektSymulacjaŚwiata\\input.json"), JsonParser.class);
-        return parameters;
+        return gson.fromJson(new FileReader("\\Users\\DELL\\IdeaProjects\\ProjektSymulacjaŚwiata\\input.json"), JsonParser.class);
     }
 
     public int getWidth() {
@@ -44,10 +40,13 @@ public class JsonParser {
         return jungleRatio;
     }
 
-    public int getStartEnergy(){
+    public int getStartEnergy() {
         return startEnergy;
     }
-    public int getInitialNumberOfAnimals(){return initialNumberOfAnimals;}
+
+    public int getInitialNumberOfAnimals() {
+        return initialNumberOfAnimals;
+    }
 
 }
 

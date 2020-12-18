@@ -1,47 +1,32 @@
 package agh.cs.project.map;
 
 import agh.cs.project.basics.Vector2d;
-import agh.cs.project.elements.Animal;
 import agh.cs.project.elements.Grass;
 import agh.cs.project.elements.IMapElement;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class GrassCollection {
-    private Map<Vector2d, Grass> grassList = new LinkedHashMap<>();
-
-    public GrassCollection(){}
-    public GrassCollection(Map<Vector2d, Grass> grassList){
-        this.grassList = grassList;
-    }
+    private final Map<Vector2d, Grass> collection = new LinkedHashMap<>();
 
     public List<Grass> grassesToList() {
-        List<Grass> list = new LinkedList<>();
-        for (Grass grass : grassList.values()) {
-            list.add(grass);
-        }
-        return list;
+        return new LinkedList<>(collection.values());
     }
 
     public Map<Vector2d, Grass> getGrassMap(){
-        return this.grassList;
+        return this.collection;
     }
 
     public void addGrass(IMapElement element){
-//        if(!grassList.containsKey(element.getPosition())){
-//            grassList.put(element.getPosition(), new HashSet<>());
-//        }
-        grassList.put(element.getPosition(), (Grass) element);
-        //grassList.get(element.getPosition()).add((Grass) element);
+        collection.put(element.getPosition(), (Grass) element);
     }
 
     public void removeGrass(IMapElement element){
         Vector2d actualPosition = element.getPosition();
-        grassList.remove(actualPosition);
-        //grassList.get(actualPosition).remove(element);
-//        if (grassList.get(actualPosition).isEmpty()) {
-//            grassList.remove(actualPosition);
-//        }
+        collection.remove(actualPosition);
     }
 
 }

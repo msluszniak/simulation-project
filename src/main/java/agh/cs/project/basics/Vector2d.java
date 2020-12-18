@@ -48,14 +48,10 @@ public class Vector2d {
     }
 
     public boolean isInArea(Vector2d lowerLeft, Vector2d upperRight){
-        if(lowerLeft.x <= this.x && upperRight.x >= this.x && lowerLeft.y <= this.y && upperRight.y >= this.y){
-            return true;
-        }
-        return false;
+        return lowerLeft.x <= this.x && upperRight.x >= this.x && lowerLeft.y <= this.y && upperRight.y >= this.y;
     }
 
     public Vector2d getCorrectPosition(Vector2d lowerLeft, Vector2d upperRight){
-        //Vector2d resultantthis = this;
         if(this.x < lowerLeft.x && this.y < lowerLeft.y){
             return new Vector2d(this.x + upperRight.x + 1, this.y + upperRight.y + 1);
         }

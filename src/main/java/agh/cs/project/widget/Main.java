@@ -3,12 +3,15 @@ package agh.cs.project.widget;
 import agh.cs.project.engine.Engine;
 import agh.cs.project.engine.JsonParser;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.FileNotFoundException;
 
 public class Main extends Application {

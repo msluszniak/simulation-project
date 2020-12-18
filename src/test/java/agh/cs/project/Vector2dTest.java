@@ -54,5 +54,25 @@ public class Vector2dTest {
         Assertions.assertEquals(new Vector2d(15, 0), position.getCorrectPosition(new Vector2d(0,0), new Vector2d(15,15)));
     }
 
+    @Test
+    public void correctPositionRowIndex(){
+        Vector2d position = new Vector2d(16, 15);
+        Assertions.assertEquals(new Vector2d(0, 15), position.getCorrectPosition(new Vector2d(0,0), new Vector2d(15,15)));
+    }
+
+    @Test
+    public void correctPositionRowIndexNegativeRow(){
+        Vector2d position = new Vector2d(-1, 15);
+        Assertions.assertEquals(new Vector2d(15, 15), position.getCorrectPosition(new Vector2d(0,0), new Vector2d(15,15)));
+    }
+
+    @Test
+    public void correctPositionOfVectorInLeftUpperCornerOutsideOfArea1(){
+        Vector2d position = new Vector2d(-1, -1);
+        Assertions.assertEquals(new Vector2d(15, 15), position.getCorrectPosition(new Vector2d(0,0), new Vector2d(15,15)));
+    }
+
+
+
 
 }

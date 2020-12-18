@@ -5,20 +5,19 @@ import java.util.Collections;
 import java.util.Random;
 
 public class Genotype {
-    private ArrayList<Integer> genotype;
-    private final Random random = new Random(42);
+    private final ArrayList<Integer> genotype;
+    private final Random random = new Random();
     //trzeba jakoś ogarnąć najczęściej pojawiający się genotyp
 
     public Genotype(){
-        ArrayList<Integer> temporaryList = new ArrayList<Integer>();
-        //we need to add at least 1 of all gens
+        ArrayList<Integer> temporaryList = new ArrayList<>();
+        //musi być co najmniej po jednym genie każdego rodzaju
         for(int i=0; i < 8; i++){
             temporaryList.add(i);
         }
         for(int i=0; i < 24; i++){
             temporaryList.add(random.nextInt(8));
         }
-        //Collections.shuffle(temporaryList, new Random());
         Collections.sort(temporaryList);
         this.genotype = temporaryList;
     }
@@ -27,13 +26,12 @@ public class Genotype {
     }
 
     public Genotype mixGenotypes(Genotype parent){
-        ArrayList<Integer> temporaryList = new ArrayList<Integer>();
+        ArrayList<Integer> temporaryList = new ArrayList<>();
         for(int i=0; i < 8; i++){
             temporaryList.add(i);
         }
         Collections.shuffle(parent.genotype, new Random());
         Collections.shuffle(this.genotype, new Random());
-        //tutaj trzeba ograniczać od dołu przez 1, a nie przez 0
         int firstGroupGensSize = random.nextInt(22);
         int secondGroupGensSize = random.nextInt(23-firstGroupGensSize);
         for(int i = 0; i < firstGroupGensSize; i++){

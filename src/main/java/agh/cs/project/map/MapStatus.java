@@ -7,7 +7,7 @@ import java.util.List;
 
 public class MapStatus {
 
-    private Engine engine;
+    private final Engine engine;
 
     public MapStatus(Engine engine){
         this.engine = engine;
@@ -21,7 +21,7 @@ public class MapStatus {
         return this.engine.getMap().getListOfGrasses().size();
     }
 
-    public double averageLifespan(){
+    public double averageEnergy(){
         List<Animal> animalList = this.engine.getMap().getListOfAnimals();
         int cumulativeEnergy = 0;
         for(Animal animal : animalList){
@@ -38,6 +38,18 @@ public class MapStatus {
         }
         return cumulativeNumberOfBabies/ ((double) this.numberOfAliveAnimals());
     }
+
+    public double averageLifespan(){
+        return this.engine.getCumulativeDeadAnimalsDays()/((double) this.engine.getNumberOfDeadAnimals());
+    }
+
+    public int numberOfChildren(Animal animal){
+        return animal.getChildren().size();
+    }
+
+
+
+
 
 
 
