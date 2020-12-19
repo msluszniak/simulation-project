@@ -71,27 +71,12 @@ public class asd extends Application {
         //MapVisualizer mapVisualizer = new MapVisualizer(engineWrapper, squareSize, rows, columns);
         GridPane overlay1 = new GridPane();
         //MapVisualizer mapVisualizer1 = new MapVisualizer(engineWrapper, squareSize, rows, columns);
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(4000), e -> run(overlay, engineWrapper.getEngine())));
-        timeline.setCycleCount(Animation.INDEFINITE);
-        Button startButton = new Button("start button");
-        startButton.setOnAction(e -> timeline.play());
-        Button stopButton = new Button("stop button");
-        stopButton.setOnAction(e -> timeline.stop());
-        HBox buttons = new HBox(startButton, stopButton, overlay);
         Pair<HBox, Timeline> pair = createTimelineAndHBox(overlay, engineWrapper.getEngine());
-        Timeline timeline1 = new Timeline(new KeyFrame(Duration.millis(4000), e -> run(overlay1, engineWrapper.getEngine1())));
-        timeline1.setCycleCount(Animation.INDEFINITE);
-        Button startButton1 = new Button("start button");
-        startButton1.setOnAction(e -> timeline1.play());
-        Button stopButton1 = new Button("stop button");
-        stopButton1.setOnAction(e -> timeline1.stop());
         Pair<HBox, Timeline> pair1 = createTimelineAndHBox(overlay1, engineWrapper.getEngine1());
-        timeline.play();
-        timeline1.play();
+        pair.getValue().play();
+        pair1.getValue().play();
 
-        HBox buttons1 = new HBox(startButton1, stopButton1, overlay1);
-
-        HBox twoMaps = new HBox(buttons, buttons1);
+        HBox twoMaps = new HBox(pair.getKey(), pair1.getKey());
 
         primaryStage.setScene(new Scene(twoMaps, width, height));
 
@@ -100,7 +85,7 @@ public class asd extends Application {
     }
 
     private Pair<HBox, Timeline> createTimelineAndHBox(GridPane overlay, Engine engine){
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(4000), e -> run(overlay, engine)));
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(250), e -> run(overlay, engine)));
         timeline.setCycleCount(Animation.INDEFINITE);
         Button startButton = new Button("start button");
         startButton.setOnAction(e -> timeline.play());
