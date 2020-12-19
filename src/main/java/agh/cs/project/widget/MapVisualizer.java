@@ -3,6 +3,7 @@ package agh.cs.project.widget;
 import agh.cs.project.basics.Vector2d;
 import agh.cs.project.elements.Animal;
 import agh.cs.project.elements.Grass;
+import agh.cs.project.engine.Engine;
 import agh.cs.project.engine.EngineWrapper;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -18,32 +19,22 @@ import javafx.util.Duration;
 import java.util.List;
 
 public class MapVisualizer {
-    private final EngineWrapper engineWrapper;
+    private final Engine engine;
     private int squareSize;
     private int rows;
     private int columns;
 
-    public MapVisualizer(EngineWrapper engineWrapper, int squareSize, int rows, int columns){
-        this.engineWrapper = engineWrapper;
+    public MapVisualizer(Engine engine, int squareSize, int rows, int columns){
+        this.engine = engine;
         this.squareSize = squareSize;
         this.rows = rows;
         this.columns = columns;
     }
 
 
-    private void run(GridPane overlay) {
-        //if (isSynchronized) {
-            //isSynchronized = false;
-            drawBackground(overlay);
-            drawIMapElements(overlay);
-            engineWrapper.run();
-            //isSynchronized = true;
-        //}
-    }
-
-    private void drawIMapElements(GridPane overlay) {
-        List<Animal> animalsToDraw = engineWrapper.getEngine().getMap().getListOfAnimals();
-        List<Grass> grassToDraw = engineWrapper.getEngine().getMap().getListOfGrasses();
+    public void drawIMapElements(GridPane overlay) {
+        List<Animal> animalsToDraw = engine.getMap().getListOfAnimals();
+        List<Grass> grassToDraw = engine.getMap().getListOfGrasses();
         //System.out.println(overlay.getChildren().size());
         for (Grass g : grassToDraw) {
             //graphicsContext.setFill(Color.rgb(94, 116, 57));
@@ -58,7 +49,7 @@ public class MapVisualizer {
             overlay.add(rectangle ,x * squareSize, y * squareSize);
         }
         for (Animal a : animalsToDraw) {
-            int color = (int)((a.getEnergy()/(float)engineWrapper.getEngine().getMap().getInitialEnergy())*255);
+            int color = (int)((a.getEnergy()/(float)engine.getMap().getInitialEnergy())*255);
             if(color > 255) color = 255;
             if(color < 0) color = 0;
             //graphicsContext.setFill(Color.rgb(color, color, color));
@@ -75,11 +66,11 @@ public class MapVisualizer {
         }
     }
 
-    private void drawBackground(GridPane overlay) {
+    public void drawBackground(GridPane overlay) {
         overlay.getChildren().clear();
         for (int i = 0; i <= rows; i++) {
             for (int j = 0; j <= columns; j++) {
-                if (engineWrapper.getEngine().getMap().isInJungle(new Vector2d(i, j))) {
+                if (engine.getMap().isInJungle(new Vector2d(i, j))) {
                     //graphicsContext.setFill(Color.web("#008000"));
                     Rectangle rectangle = new Rectangle(i * squareSize, j * squareSize, squareSize, squareSize);
                     rectangle.setFill(Color.web("#008000"));
