@@ -5,5 +5,5 @@
   "startEnergy": 20,
   "moveEnergy": 1,
   "plantEnergy": 1,
-  "initialNumberOfAnimals": 1
+  "initialNumberOfAnimals": 30
 }

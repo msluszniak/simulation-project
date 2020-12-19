@@ -22,6 +22,7 @@ public class Engine {
     private final Random random = new Random();
     private int cumulativeDeadAnimalsDays = 0;
     private int numberOfDeadAnimals = 0;
+    private int endSpying = 0;
 
     public Engine(int width, int height, double jungleRation, int initialEnergy,
                   int initialNumberOfAnimals, int energyFromGrass, int energyLoss) {
@@ -31,6 +32,10 @@ public class Engine {
         this.energyLoss = energyLoss;
     }
 
+
+    public void setEndSpying(int n){
+        this.endSpying = this.actualDate + n;
+    }
 
     public void removeDeadAnimals() {
         List<Animal> animalList = this.map.getListOfAnimals();
@@ -46,8 +51,8 @@ public class Engine {
     public void moveAllAnimals() {
         List<Animal> animalList = this.map.getListOfAnimals();
         for (Animal animal : animalList) {
-            System.out.println(animal.getEnergy());
             animal.move(energyLoss);
+
         }
     }
 
@@ -118,15 +123,18 @@ public class Engine {
         this.actualDate++;
     }
 
+    public int getActualDate(){
+        return this.actualDate;
+    }
+
     public RectangularMap getMap() {
         return this.map;
     }
 
+    public int getInitialNumberOfAnimals(){ return initialNumberOfAnimals;}
     public int getNumberOfDeadAnimals(){return numberOfDeadAnimals;}
 
     public int getCumulativeDeadAnimalsDays(){return cumulativeDeadAnimalsDays;}
-
-    public int getInitialNumberOfAnimals(){return initialNumberOfAnimals;}
 
 
 }

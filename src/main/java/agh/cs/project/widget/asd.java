@@ -6,6 +6,7 @@ import agh.cs.project.elements.Grass;
 import agh.cs.project.engine.Engine;
 import agh.cs.project.engine.EngineWrapper;
 import agh.cs.project.engine.JsonParser;
+import agh.cs.project.map.MapStatus;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -17,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -29,18 +31,21 @@ import javafx.util.Pair;
 
 import java.io.FileNotFoundException;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static agh.cs.project.engine.JsonParser.loadParametersFromFile;
 
 public class asd extends Application {
-    private final int width = 1400;
-    private final int height = 650;
+    private final int width = 1100;
+    private final int height = 750;
     private int rows;
     private int columns;
     private int squareSize;
     private volatile boolean isSynchronized = true;
     private EngineWrapper engineWrapper;
-    private static boolean flag = true;
+    private static boolean flag = false;
+    private static AnimalOnClick animalOnClick = new AnimalOnClick();
+
 
     //private GraphicsContext graphicsContext;
 
@@ -71,34 +76,105 @@ public class asd extends Application {
         //MapVisualizer mapVisualizer = new MapVisualizer(engineWrapper, squareSize, rows, columns);
         GridPane overlay1 = new GridPane();
         //MapVisualizer mapVisualizer1 = new MapVisualizer(engineWrapper, squareSize, rows, columns);
-        Pair<HBox, Timeline> pair = createTimelineAndHBox(overlay, engineWrapper.getEngine());
-        Pair<HBox, Timeline> pair1 = createTimelineAndHBox(overlay1, engineWrapper.getEngine1());
+        Pair<VBox, Timeline> pair = createTimelineAndHBox(overlay, engineWrapper.getEngine());
+        Pair<VBox, Timeline> pair1 = createTimelineAndHBox(overlay1, engineWrapper.getEngine1());
         pair.getValue().play();
         pair1.getValue().play();
+        MapStatus mapStatus = new MapStatus(engineWrapper.getEngine());
+        MapStatus mapStatus1 = new MapStatus(engineWrapper.getEngine1());
+        createStatisticButtonAverageEnergy(pair.getKey(), mapStatus);
+        createStatisticButtonAverageEnergy(pair1.getKey(), mapStatus1);
+        createStatisticButtonNumberOfAliveAnimals(pair.getKey(), mapStatus);
+        createStatisticButtonNumberOfAliveAnimals(pair1.getKey(), mapStatus1);
+        createStatisticButtonNumberOfGrass(pair.getKey(), mapStatus);
+        createStatisticButtonNumberOfGrass(pair1.getKey(), mapStatus1);
+        createStatisticButtonAverageLifespan(pair.getKey(), mapStatus);
+        createStatisticButtonAverageLifespan(pair1.getKey(), mapStatus1);
+        createStatisticButtonAverageNumberOfBabies(pair.getKey(), mapStatus);
+        createStatisticButtonAverageNumberOfBabies(pair1.getKey(), mapStatus1);
+        createStatisticButtonDominantGenotype(pair.getKey(), mapStatus);
+        createStatisticButtonDominantGenotype(pair1.getKey(), mapStatus1);
+        TextField textField = createTextField(pair.getKey());
+        TextField textField1 = createTextField(pair1.getKey());
+        createButtonGetValueOfTextField(pair.getKey(), textField);
+        createButtonGetValueOfTextField(pair1.getKey(), textField1);
+
+
         HBox twoMaps = new HBox(pair.getKey(), pair1.getKey());
+        twoMaps.setSpacing(50);
+
         primaryStage.setScene(new Scene(twoMaps, width, height));
 
         primaryStage.show();
 
     }
 
-    private Pair<HBox, Timeline> createTimelineAndHBox(GridPane overlay, Engine engine){
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), e -> run(overlay, engine)));
+    private Pair<VBox, Timeline> createTimelineAndHBox(GridPane overlay, Engine engine){
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(250), e -> run(overlay, engine, animalOnClick)));
         timeline.setCycleCount(Animation.INDEFINITE);
         Button startButton = new Button("start button");
         startButton.setOnAction(e -> timeline.play());
         Button stopButton = new Button("stop button");
         stopButton.setOnAction(e -> timeline.stop());
-        HBox buttons = new HBox(startButton, stopButton, overlay);
+        VBox buttons = new VBox(startButton, stopButton, overlay);
         return new Pair<>(buttons, timeline);
     }
 
 
 
-    private void run(GridPane overlay, Engine engine) {
+    private TextField createTextField(VBox mapbox){
+        TextField textField = new TextField("100");
+        mapbox.getChildren().add(textField);
+        return textField;
+    }
+
+    private void createButtonGetValueOfTextField(VBox mapbox, TextField textField){
+        Button button = new Button("Wartość n");
+        button.setOnAction(e ->  animalOnClick.setTrackDuring(Integer.parseInt(textField.getText())));
+        mapbox.getChildren().add(button);
+    }
+
+
+    private void createStatisticButtonDominantGenotype(VBox mapBox, MapStatus mapStatus) {
+        Button button = new Button("Dominujący genotyp");
+        button.setOnAction(e -> System.out.println(mapStatus.dominantGenotype().getKey()));
+        mapBox.getChildren().add(button);
+    }
+
+    private void createStatisticButtonNumberOfAliveAnimals(VBox mapBox, MapStatus mapStatus) {
+        Button button = new Button("Liczba zwierząt");
+        button.setOnAction(e -> System.out.println(mapStatus.numberOfAliveAnimals()));
+        mapBox.getChildren().add(button);
+    }
+
+    private void createStatisticButtonNumberOfGrass(VBox mapBox, MapStatus mapStatus) {
+        Button button = new Button("Liczba traw");
+        button.setOnAction(e -> System.out.println(mapStatus.numberOfGrass()));
+        mapBox.getChildren().add(button);
+    }
+
+    private void createStatisticButtonAverageEnergy(VBox mapBox, MapStatus mapStatus) {
+        Button button = new Button("Średnia enegria");
+        button.setOnAction(e -> System.out.println(mapStatus.averageEnergy()));
+        mapBox.getChildren().add(button);
+    }
+
+    private void createStatisticButtonAverageLifespan(VBox mapBox, MapStatus mapStatus) {
+        Button button = new Button("Średnia długość życia");
+        button.setOnAction(e -> System.out.println(mapStatus.averageLifespan()));
+        mapBox.getChildren().add(button);
+    }
+
+    private void createStatisticButtonAverageNumberOfBabies(VBox mapBox, MapStatus mapStatus) {
+        Button button = new Button("Średnia liczba dzieci");
+        button.setOnAction(e -> System.out.println(mapStatus.averageNumberOfBabies()));
+        mapBox.getChildren().add(button);
+    }
+
+    private void run(GridPane overlay, Engine engine, AnimalOnClick trackedAnimal) {
         MapVisualizer mapVisualizer = new MapVisualizer(engine, squareSize, rows, columns);
         mapVisualizer.drawBackground(overlay);
-        mapVisualizer.drawIMapElements(overlay);
+        mapVisualizer.drawIMapElements(overlay, trackedAnimal);
 
         //if (isSynchronized) {
            // isSynchronized = false;
@@ -109,6 +185,7 @@ public class asd extends Application {
            // isSynchronized = true;
         //}
     }
+
 
 
 

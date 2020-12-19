@@ -2,6 +2,7 @@ package agh.cs.project.elements;
 
 import agh.cs.project.basics.Genotype;
 import agh.cs.project.basics.Vector2d;
+import agh.cs.project.engine.Engine;
 import agh.cs.project.engine.IDeadAnimalOnPosition;
 import agh.cs.project.engine.IPositionChangeObserver;
 import agh.cs.project.map.MapDirection;
@@ -23,6 +24,7 @@ public class Animal implements IMapElement, IDeadAnimalOnPosition {
     private List<Animal> children = new LinkedList<>();
     private final List<RectangularMap> observerList = new ArrayList<>();
     private final List<RectangularMap> energyObserverList = new ArrayList<>();
+    private final List<IAnimalObserver> trackObserver = new ArrayList<>();
     private static int generalId = 1;
     private final int id;
 
@@ -52,6 +54,16 @@ public class Animal implements IMapElement, IDeadAnimalOnPosition {
         //this.initialEnergy = copy.energy;
         this.id = copy.id;
     }
+
+    public void addTrackObserver(IAnimalObserver observer){
+        trackObserver.add(observer);
+    }
+
+    public void removeTrackObserver(IAnimalObserver observer){
+        trackObserver.remove(observer);
+    }
+
+
     public void positionChanged(Vector2d oldPosition){
         for (RectangularMap observer: observerList) {
             observer.positionChanged(oldPosition, this);
@@ -63,6 +75,7 @@ public class Animal implements IMapElement, IDeadAnimalOnPosition {
             map.energyChanged(oldAnimal, this);
         //}
     }
+
 
     public boolean isAlreadyDead(int date){
         if(this.energy <= 0){

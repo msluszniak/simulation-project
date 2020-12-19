@@ -2,8 +2,9 @@ package agh.cs.project.map;
 
 import agh.cs.project.elements.Animal;
 import agh.cs.project.engine.Engine;
+import javafx.util.Pair;
 
-import java.util.List;
+import java.util.*;
 
 public class MapStatus {
 
@@ -17,7 +18,7 @@ public class MapStatus {
         return this.engine.getMap().getListOfAnimals().size();
     }
 
-    public int numberOfGrasses(){
+    public int numberOfGrass(){
         return this.engine.getMap().getListOfGrasses().size();
     }
 
@@ -43,16 +44,33 @@ public class MapStatus {
         return this.engine.getCumulativeDeadAnimalsDays()/((double) this.engine.getNumberOfDeadAnimals());
     }
 
+    public Map.Entry<List<Integer>, Set<Animal>> dominantGenotype(){
+        List<Animal> animals = this.engine.getMap().getListOfAnimals();
+        Map<List<Integer>, Set<Animal>> resultMapping = new HashMap<>();
+        for(Animal animal : animals){
+            if(!resultMapping.containsKey(animal.getGenotype())){
+                resultMapping.put(animal.getGenotype(), new HashSet<>(Set.of(animal)));
+            }
+            else {
+                resultMapping.get(animal.getGenotype()).add(animal);
+            }
+        }
+        int max_size = 0;
+        Map.Entry<List<Integer>, Set<Animal>> dominantGenotype = null;
+        for(Map.Entry<List<Integer>, Set<Animal>> pair : resultMapping.entrySet()){
+            if(max_size < pair.getValue().size()){
+                max_size = pair.getValue().size();
+                dominantGenotype = pair;
+            }
+        }
+        return dominantGenotype;
+    }
+
     public int numberOfChildren(Animal animal){
         return animal.getChildren().size();
     }
 
-
-
-
-
-
-
-
-
+    public Engine getEngine(){
+        return engine;
+    }
 }
