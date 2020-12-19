@@ -85,7 +85,7 @@ public class asd extends Application {
     }
 
     private Pair<HBox, Timeline> createTimelineAndHBox(GridPane overlay, Engine engine){
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(250), e -> run(overlay, engine)));
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), e -> run(overlay, engine)));
         timeline.setCycleCount(Animation.INDEFINITE);
         Button startButton = new Button("start button");
         startButton.setOnAction(e -> timeline.play());

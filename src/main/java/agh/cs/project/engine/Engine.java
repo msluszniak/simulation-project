@@ -40,6 +40,7 @@ public class Engine {
         }
     }
 
+
     public void removeDeadAnimals() {
         List<Animal> animalList = this.map.getListOfAnimals();
         for (Animal animal : animalList) {
@@ -129,6 +130,7 @@ public class Engine {
         return this.map;
     }
 
+    public int getInitialNumberOfAnimals(){ return initialNumberOfAnimals;}
     public int getNumberOfDeadAnimals(){return numberOfDeadAnimals;}
 
     public int getCumulativeDeadAnimalsDays(){return cumulativeDeadAnimalsDays;}
