@@ -1,6 +1,7 @@
 C:\Users\DELL\IdeaProjects\ProjektSymulacjaŚwiata\src\main\java\agh\cs\project\engine\EngineWrapper.java
 C:\Users\DELL\IdeaProjects\ProjektSymulacjaŚwiata\src\main\java\agh\cs\project\map\RectangularMap.java
 C:\Users\DELL\IdeaProjects\ProjektSymulacjaŚwiata\src\main\java\agh\cs\project\engine\IDeadAnimalOnPosition.java
+C:\Users\DELL\IdeaProjects\ProjektSymulacjaŚwiata\src\main\java\agh\cs\project\widget\IObserver.java
 C:\Users\DELL\IdeaProjects\ProjektSymulacjaŚwiata\src\main\java\agh\cs\project\basics\Vector2d.java
 C:\Users\DELL\IdeaProjects\ProjektSymulacjaŚwiata\src\main\java\agh\cs\project\engine\Engine.java
 C:\Users\DELL\IdeaProjects\ProjektSymulacjaŚwiata\src\main\java\agh\cs\project\widget\Visualisation.java
@@ -10,10 +11,12 @@ C:\Users\DELL\IdeaProjects\ProjektSymulacjaŚwiata\src\main\java\agh\cs\project\
 C:\Users\DELL\IdeaProjects\ProjektSymulacjaŚwiata\src\main\java\agh\cs\project\elements\Animal.java
 C:\Users\DELL\IdeaProjects\ProjektSymulacjaŚwiata\src\main\java\agh\cs\project\widget\asd.java
 C:\Users\DELL\IdeaProjects\ProjektSymulacjaŚwiata\src\main\java\agh\cs\project\map\AnimalCollection.java
+C:\Users\DELL\IdeaProjects\ProjektSymulacjaŚwiata\src\main\java\agh\cs\project\widget\AnimalOnClick.java
 C:\Users\DELL\IdeaProjects\ProjektSymulacjaŚwiata\src\main\java\agh\cs\project\basics\Genotype.java
 C:\Users\DELL\IdeaProjects\ProjektSymulacjaŚwiata\src\main\java\agh\cs\project\map\MapDirection.java
 C:\Users\DELL\IdeaProjects\ProjektSymulacjaŚwiata\src\main\java\agh\cs\project\elements\IMapElement.java
 C:\Users\DELL\IdeaProjects\ProjektSymulacjaŚwiata\src\main\java\agh\cs\project\map\MapStatus.java
 C:\Users\DELL\IdeaProjects\ProjektSymulacjaŚwiata\src\main\java\agh\cs\project\widget\MapVisualizer.java
+C:\Users\DELL\IdeaProjects\ProjektSymulacjaŚwiata\src\main\java\agh\cs\project\elements\IAnimalObserver.java
 C:\Users\DELL\IdeaProjects\ProjektSymulacjaŚwiata\src\main\java\agh\cs\project\map\GrassCollection.java
 C:\Users\DELL\IdeaProjects\ProjektSymulacjaŚwiata\src\main\java\agh\cs\project\engine\JsonParser.java

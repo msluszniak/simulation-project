@@ -72,6 +72,7 @@ public class RectangularMap {
         this.animalCollection.getAnimalMap().get(animal.getPosition()).add(animal);
     }
 
+
     private Set<Vector2d> getProperArea(Vector2d position) {
         return position.isInArea(lowerLeftJungle, upperRightJungle) ? emptyPlacesJungle : emptyPlacesOutsideJungle;
     }

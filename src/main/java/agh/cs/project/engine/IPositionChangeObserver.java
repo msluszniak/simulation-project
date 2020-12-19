@@ -1,5 +1,7 @@
 package agh.cs.project.engine;
 
-public interface IPositionChangeObserver {
+import agh.cs.project.widget.IObserver;
+
+public interface IPositionChangeObserver extends IObserver {
     void positionChanged(int date);
 }

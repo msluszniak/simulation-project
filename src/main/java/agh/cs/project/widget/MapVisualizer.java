@@ -32,9 +32,11 @@ public class MapVisualizer {
     }
 
 
-    public void drawIMapElements(GridPane overlay) {
+    public void drawIMapElements(GridPane overlay, AnimalOnClick trackedAnimal) {
         List<Animal> animalsToDraw = engine.getMap().getListOfAnimals();
         List<Grass> grassToDraw = engine.getMap().getListOfGrasses();
+        if(trackedAnimal.getTrackedAnimal() != null)
+            trackedAnimal.update();
         //System.out.println(overlay.getChildren().size());
         for (Grass g : grassToDraw) {
             //graphicsContext.setFill(Color.rgb(94, 116, 57));
@@ -60,9 +62,18 @@ public class MapVisualizer {
             rectangle.setFill(Color.rgb(color, color, color));
             rectangle.setOnMouseClicked((MouseEvent e) -> {
                 System.out.println(a.getGenotype());
+                trackedAnimal.changeAnimal(a);
+                if(trackedAnimal.getAnimal() != null && trackedAnimal.getTrackDuring() != 0){
+                    trackedAnimal.setWhenCaught(engine.getActualDate());
+                }
                 //timeline.stop();// change functionality
             });
             overlay.add(rectangle, x * squareSize, y * squareSize);
+        }
+        if(engine.getActualDate() == trackedAnimal.getWhenCaught()+trackedAnimal.getTrackDuring()) {
+            System.out.println(trackedAnimal.getNumberOfChildren());
+            System.out.println(trackedAnimal.getNumberOfDescendants());
+            System.out.println(trackedAnimal.getDateOfDeath());
         }
     }
 

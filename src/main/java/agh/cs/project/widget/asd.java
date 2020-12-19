@@ -18,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -42,7 +43,9 @@ public class asd extends Application {
     private int squareSize;
     private volatile boolean isSynchronized = true;
     private EngineWrapper engineWrapper;
-    private static boolean flag = true;
+    private static boolean flag = false;
+    private static AnimalOnClick animalOnClick = new AnimalOnClick();
+
 
     //private GraphicsContext graphicsContext;
 
@@ -91,6 +94,11 @@ public class asd extends Application {
         createStatisticButtonAverageNumberOfBabies(pair1.getKey(), mapStatus1);
         createStatisticButtonDominantGenotype(pair.getKey(), mapStatus);
         createStatisticButtonDominantGenotype(pair1.getKey(), mapStatus1);
+        TextField textField = createTextField(pair.getKey());
+        TextField textField1 = createTextField(pair1.getKey());
+        createButtonGetValueOfTextField(pair.getKey(), textField);
+        createButtonGetValueOfTextField(pair1.getKey(), textField1);
+
 
         HBox twoMaps = new HBox(pair.getKey(), pair1.getKey());
         twoMaps.setSpacing(50);
@@ -102,7 +110,7 @@ public class asd extends Application {
     }
 
     private Pair<VBox, Timeline> createTimelineAndHBox(GridPane overlay, Engine engine){
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(250), e -> run(overlay, engine)));
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(250), e -> run(overlay, engine, animalOnClick)));
         timeline.setCycleCount(Animation.INDEFINITE);
         Button startButton = new Button("start button");
         startButton.setOnAction(e -> timeline.play());
@@ -110,6 +118,20 @@ public class asd extends Application {
         stopButton.setOnAction(e -> timeline.stop());
         VBox buttons = new VBox(startButton, stopButton, overlay);
         return new Pair<>(buttons, timeline);
+    }
+
+
+
+    private TextField createTextField(VBox mapbox){
+        TextField textField = new TextField("100");
+        mapbox.getChildren().add(textField);
+        return textField;
+    }
+
+    private void createButtonGetValueOfTextField(VBox mapbox, TextField textField){
+        Button button = new Button("Wartość n");
+        button.setOnAction(e ->  animalOnClick.setTrackDuring(Integer.parseInt(textField.getText())));
+        mapbox.getChildren().add(button);
     }
 
 
@@ -149,10 +171,10 @@ public class asd extends Application {
         mapBox.getChildren().add(button);
     }
 
-    private void run(GridPane overlay, Engine engine) {
+    private void run(GridPane overlay, Engine engine, AnimalOnClick trackedAnimal) {
         MapVisualizer mapVisualizer = new MapVisualizer(engine, squareSize, rows, columns);
         mapVisualizer.drawBackground(overlay);
-        mapVisualizer.drawIMapElements(overlay);
+        mapVisualizer.drawIMapElements(overlay, trackedAnimal);
 
         //if (isSynchronized) {
            // isSynchronized = false;
@@ -163,6 +185,7 @@ public class asd extends Application {
            // isSynchronized = true;
         //}
     }
+
 
 
 
