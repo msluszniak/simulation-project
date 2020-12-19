@@ -36,7 +36,7 @@ import static agh.cs.project.engine.JsonParser.loadParametersFromFile;
 
 public class asd extends Application {
     private final int width = 1100;
-    private final int height = 650;
+    private final int height = 750;
     private int rows;
     private int columns;
     private int squareSize;
@@ -89,6 +89,8 @@ public class asd extends Application {
         createStatisticButtonAverageLifespan(pair1.getKey(), mapStatus1);
         createStatisticButtonAverageNumberOfBabies(pair.getKey(), mapStatus);
         createStatisticButtonAverageNumberOfBabies(pair1.getKey(), mapStatus1);
+        createStatisticButtonDominantGenotype(pair.getKey(), mapStatus);
+        createStatisticButtonDominantGenotype(pair1.getKey(), mapStatus1);
 
         HBox twoMaps = new HBox(pair.getKey(), pair1.getKey());
         twoMaps.setSpacing(50);
@@ -110,6 +112,12 @@ public class asd extends Application {
         return new Pair<>(buttons, timeline);
     }
 
+
+    private void createStatisticButtonDominantGenotype(VBox mapBox, MapStatus mapStatus) {
+        Button button = new Button("Dominujący genotyp");
+        button.setOnAction(e -> System.out.println(mapStatus.dominantGenotype().getKey()));
+        mapBox.getChildren().add(button);
+    }
 
     private void createStatisticButtonNumberOfAliveAnimals(VBox mapBox, MapStatus mapStatus) {
         Button button = new Button("Liczba zwierząt");
