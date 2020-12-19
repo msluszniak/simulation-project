@@ -17,7 +17,7 @@ public class MapStatus {
         return this.engine.getMap().getListOfAnimals().size();
     }
 
-    public int numberOfGrasses(){
+    public int numberOfGrass(){
         return this.engine.getMap().getListOfGrasses().size();
     }
 
@@ -47,12 +47,7 @@ public class MapStatus {
         return animal.getChildren().size();
     }
 
-
-
-
-
-
-
-
-
+    public Engine getEngine(){
+        return engine;
+    }
 }
