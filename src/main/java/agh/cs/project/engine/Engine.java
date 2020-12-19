@@ -31,14 +31,6 @@ public class Engine {
         this.energyLoss = energyLoss;
     }
 
-    public void spawnInitialAnimals() {
-        for (int i = 0; i < initialNumberOfAnimals; i++) {
-            Vector2d initPosition = this.map.initializeRandomPositionInBounds();
-            Genotype genotype = new Genotype();
-            Animal animal = new Animal(this.map, initPosition, genotype, this.map.getInitialEnergy(), 0);
-            map.addElement(animal);
-        }
-    }
 
     public void removeDeadAnimals() {
         List<Animal> animalList = this.map.getListOfAnimals();
@@ -54,6 +46,7 @@ public class Engine {
     public void moveAllAnimals() {
         List<Animal> animalList = this.map.getListOfAnimals();
         for (Animal animal : animalList) {
+            System.out.println(animal.getEnergy());
             animal.move(energyLoss);
         }
     }
@@ -132,6 +125,8 @@ public class Engine {
     public int getNumberOfDeadAnimals(){return numberOfDeadAnimals;}
 
     public int getCumulativeDeadAnimalsDays(){return cumulativeDeadAnimalsDays;}
+
+    public int getInitialNumberOfAnimals(){return initialNumberOfAnimals;}
 
 
 }

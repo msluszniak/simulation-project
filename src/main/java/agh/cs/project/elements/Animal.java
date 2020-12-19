@@ -59,9 +59,9 @@ public class Animal implements IMapElement, IDeadAnimalOnPosition {
     }
 
     public void energyChanged(Animal oldAnimal){
-        for(RectangularMap energyObserver: energyObserverList){
-            energyObserver.energyChanged(oldAnimal, this);
-        }
+        //for(RectangularMap energyObserver: energyObserverList){
+            map.energyChanged(oldAnimal, this);
+        //}
     }
 
     public boolean isAlreadyDead(int date){

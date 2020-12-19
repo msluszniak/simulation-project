@@ -114,18 +114,18 @@ public class RectangularMap {
     }
 
     public Vector2d getProperPositionForBabyAnimal(Vector2d parentPosition) {
-        Random random = new Random(42);
+        Random random = new Random();
         List<Vector2d> potentialPositions = new LinkedList<>();
         List<Vector2d> potentialOccupiedPositions = new LinkedList<>();
         for (int i = 0; i < 8; i++) {
-            if (grassCollection.getGrassMap().containsKey(parentPosition.add(MapDirection.values()[i].toUnitVector()))) {
-                continue;
-            }
-            if (animalCollection.getAnimalMap().containsKey(parentPosition.add(MapDirection.values()[i].toUnitVector()))) {
+            if (grassCollection.getGrassMap().containsKey(parentPosition.add(MapDirection.values()[i].toUnitVector()))
+            || animalCollection.getAnimalMap().containsKey(parentPosition.add(MapDirection.values()[i].toUnitVector()))) {
                 potentialOccupiedPositions.add(parentPosition.add(MapDirection.values()[i].toUnitVector()));
             }
-            potentialPositions.add(parentPosition.add(MapDirection.values()[i].toUnitVector()));
+            else potentialPositions.add(parentPosition.add(MapDirection.values()[i].toUnitVector()));
         }
+        System.out.print(potentialPositions.size() + " ");
+        System.out.println(potentialOccupiedPositions.size());
         if (!potentialPositions.isEmpty()) {
             return potentialPositions.get(random.nextInt(potentialPositions.size()));
         }
