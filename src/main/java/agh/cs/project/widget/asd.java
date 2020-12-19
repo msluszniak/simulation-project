@@ -40,7 +40,7 @@ public class asd extends Application {
     private EngineWrapper engineWrapper;
     private static boolean flag = true;
 
-    private GraphicsContext graphicsContext;
+    //private GraphicsContext graphicsContext;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -65,7 +65,7 @@ public class asd extends Application {
         //primaryStage.setScene(scene);
         //graphicsContext = canvas.getGraphicsContext2D();
         GridPane overlay = new GridPane();
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), e -> run(overlay)));
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(250), e -> run(overlay)));
         timeline.setCycleCount(Animation.INDEFINITE);
         Button startButton = new Button("start_button");
         startButton.setOnAction(e -> timeline.play());
@@ -92,7 +92,7 @@ public class asd extends Application {
     private void drawIMapElements(GridPane overlay) {
         List<Animal> animalsToDraw = engineWrapper.getEngine().getMap().getListOfAnimals();
         List<Grass> grassToDraw = engineWrapper.getEngine().getMap().getListOfGrasses();
-
+        //System.out.println(overlay.getChildren().size());
         for (Grass g : grassToDraw) {
             //graphicsContext.setFill(Color.rgb(94, 116, 57));
             int x = g.getPosition().x;
@@ -124,6 +124,7 @@ public class asd extends Application {
     }
 
     private void drawBackground(GridPane overlay) {
+        overlay.getChildren().clear();
         for (int i = 0; i <= rows; i++) {
             for (int j = 0; j <= columns; j++) {
                 if (engineWrapper.getEngine().getMap().isInJungle(new Vector2d(i, j))) {
