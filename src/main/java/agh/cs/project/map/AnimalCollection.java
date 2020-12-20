@@ -51,7 +51,7 @@ public class AnimalCollection {
     public void removeAnimal(IMapElement element) {
         Vector2d actualPosition = element.getPosition();
         if (animals.containsKey(actualPosition)) {
-            animals.get(actualPosition).remove(element);
+            animals.get(actualPosition).remove( (Animal) element);
 
             if (animals.get(actualPosition).isEmpty()) {
                 animals.remove(actualPosition);

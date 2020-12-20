@@ -18,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -37,7 +38,7 @@ import static agh.cs.project.engine.JsonParser.loadParametersFromFile;
 
 public class asd extends Application {
     private final int width = 1100;
-    private final int height = 750;
+    private final int height = 650;
     private int rows;
     private int columns;
     private int squareSize;
@@ -76,12 +77,12 @@ public class asd extends Application {
         //MapVisualizer mapVisualizer = new MapVisualizer(engineWrapper, squareSize, rows, columns);
         GridPane overlay1 = new GridPane();
         //MapVisualizer mapVisualizer1 = new MapVisualizer(engineWrapper, squareSize, rows, columns);
-        Pair<VBox, Timeline> pair = createTimelineAndHBox(overlay, engineWrapper.getEngine());
-        Pair<VBox, Timeline> pair1 = createTimelineAndHBox(overlay1, engineWrapper.getEngine1());
-        pair.getValue().play();
-        pair1.getValue().play();
         MapStatus mapStatus = new MapStatus(engineWrapper.getEngine());
         MapStatus mapStatus1 = new MapStatus(engineWrapper.getEngine1());
+        Pair<VBox, Timeline> pair = createTimelineAndHBox(overlay, engineWrapper.getEngine(), mapStatus);
+        Pair<VBox, Timeline> pair1 = createTimelineAndHBox(overlay1, engineWrapper.getEngine1(), mapStatus1);
+        pair.getValue().play();
+        pair1.getValue().play();
         createStatisticButtonAverageEnergy(pair.getKey(), mapStatus);
         createStatisticButtonAverageEnergy(pair1.getKey(), mapStatus1);
         createStatisticButtonNumberOfAliveAnimals(pair.getKey(), mapStatus);
@@ -98,19 +99,25 @@ public class asd extends Application {
         TextField textField1 = createTextField(pair1.getKey());
         createButtonGetValueOfTextField(pair.getKey(), textField);
         createButtonGetValueOfTextField(pair1.getKey(), textField1);
+        createButtonShowAnimalsWithDominantGenotype(pair.getKey());
+        createButtonShowAnimalsWithDominantGenotype(pair1.getKey());
 
 
         HBox twoMaps = new HBox(pair.getKey(), pair1.getKey());
         twoMaps.setSpacing(50);
+        ScrollPane scroll = new ScrollPane();
+        scroll.setContent(twoMaps);
 
-        primaryStage.setScene(new Scene(twoMaps, width, height));
+        primaryStage.setScene(new Scene(scroll, width, height));
+        //primaryStage.setScene(new Scene(twoMaps, width, height));
 
         primaryStage.show();
 
     }
 
-    private Pair<VBox, Timeline> createTimelineAndHBox(GridPane overlay, Engine engine){
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(250), e -> run(overlay, engine, animalOnClick)));
+
+    private Pair<VBox, Timeline> createTimelineAndHBox(GridPane overlay, Engine engine, MapStatus mapStatus) {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(250), e -> run(overlay, engine, animalOnClick, mapStatus)));
         timeline.setCycleCount(Animation.INDEFINITE);
         Button startButton = new Button("start button");
         startButton.setOnAction(e -> timeline.play());
@@ -121,23 +128,36 @@ public class asd extends Application {
     }
 
 
-
-    private TextField createTextField(VBox mapbox){
+    private TextField createTextField(VBox mapbox) {
         TextField textField = new TextField("100");
         mapbox.getChildren().add(textField);
         return textField;
     }
 
-    private void createButtonGetValueOfTextField(VBox mapbox, TextField textField){
+    private void createButtonShowAnimalsWithDominantGenotype(VBox mapbox) {
+        Button button = new Button("Zwierzeta z genotypem dominujacym");
+        button.setOnAction(e -> {
+            flag = !flag;
+        });
+        mapbox.getChildren().add(button);
+    }
+
+    private void createButtonGetValueOfTextField(VBox mapbox, TextField textField) {
         Button button = new Button("Wartość n");
-        button.setOnAction(e ->  animalOnClick.setTrackDuring(Integer.parseInt(textField.getText())));
+        button.setOnAction(e -> animalOnClick.setTrackDuring(Integer.parseInt(textField.getText())));
         mapbox.getChildren().add(button);
     }
 
 
     private void createStatisticButtonDominantGenotype(VBox mapBox, MapStatus mapStatus) {
         Button button = new Button("Dominujący genotyp");
-        button.setOnAction(e -> System.out.println(mapStatus.dominantGenotype().getKey()));
+        button.setOnAction(e -> {
+            if (mapStatus.dominantGenotype() != null) {
+                System.out.println(mapStatus.dominantGenotype().getKey());
+            } else {
+                System.out.println("Wszystkie zwierzeta sa martwe!");
+            }
+        });
         mapBox.getChildren().add(button);
     }
 
@@ -171,22 +191,20 @@ public class asd extends Application {
         mapBox.getChildren().add(button);
     }
 
-    private void run(GridPane overlay, Engine engine, AnimalOnClick trackedAnimal) {
+    private void run(GridPane overlay, Engine engine, AnimalOnClick trackedAnimal, MapStatus mapStatus) {
         MapVisualizer mapVisualizer = new MapVisualizer(engine, squareSize, rows, columns);
         mapVisualizer.drawBackground(overlay);
-        mapVisualizer.drawIMapElements(overlay, trackedAnimal);
+        mapVisualizer.drawIMapElements(overlay, trackedAnimal, flag, mapStatus);
 
         //if (isSynchronized) {
-           // isSynchronized = false;
-           // drawBackground(overlay);
-           // drawIMapElements(overlay);
+        // isSynchronized = false;
+        // drawBackground(overlay);
+        // drawIMapElements(overlay);
         engine.step();
         //return overlay;
-           // isSynchronized = true;
+        // isSynchronized = true;
         //}
     }
-
-
 
 
     public static void main(String[] args) {

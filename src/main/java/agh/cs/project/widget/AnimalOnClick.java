@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 public class AnimalOnClick implements IAnimalObserver {
-    private Animal animal;
+    private Animal animal = null;
     private int trackDuring;
     private int whenCaught;
     private int numberOfChildren;
@@ -25,12 +25,15 @@ public class AnimalOnClick implements IAnimalObserver {
     }
 
     public int getDateOfDeath() {
-        return dateOfDeath;
+        if (this.animal != null) {
+            return this.animal.getDeathDate();
+        }
+        return -1;
     }
 
     public AnimalOnClick(Animal animal){
         this.animal = animal;
-        this.trackDuring = 0;
+        this.trackDuring = -1;
     }
 
     public void  changeAnimal(Animal newAnimal){

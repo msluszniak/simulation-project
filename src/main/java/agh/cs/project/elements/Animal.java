@@ -71,9 +71,9 @@ public class Animal implements IMapElement, IDeadAnimalOnPosition {
     }
 
     public void energyChanged(Animal oldAnimal){
-        //for(RectangularMap energyObserver: energyObserverList){
+        for(RectangularMap energyObserver: energyObserverList){
             map.energyChanged(oldAnimal, this);
-        //}
+        }
     }
 
 

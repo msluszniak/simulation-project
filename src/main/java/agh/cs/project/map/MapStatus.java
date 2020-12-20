@@ -10,15 +10,24 @@ public class MapStatus {
 
     private final Engine engine;
 
+    private static List<Integer> averageNumberOfAliveAnimalsAfterGivenNumberOfEpochs = new LinkedList<>();
+    private static List<Integer> averageNumberOfGrassAfterGivenNumberOfEpochs = new LinkedList<>();
+    private static List<Double> averageEnergyAfterGivenNumberOfEpochs = new LinkedList<>();
+    private static List<Double> averageLifespanAfterGivenNumberOfEpochs = new LinkedList<>();
+    private static List<Double> averageNumberOfBabiesAfterGivenNumberOfEpochs = new LinkedList<>();
+
+
     public MapStatus(Engine engine){
         this.engine = engine;
     }
 
     public int numberOfAliveAnimals(){
+        averageNumberOfAliveAnimalsAfterGivenNumberOfEpochs.add(this.engine.getMap().getListOfAnimals().size());
         return this.engine.getMap().getListOfAnimals().size();
     }
 
     public int numberOfGrass(){
+        averageNumberOfGrassAfterGivenNumberOfEpochs.add(this.engine.getMap().getListOfGrasses().size());
         return this.engine.getMap().getListOfGrasses().size();
     }
 
@@ -28,6 +37,7 @@ public class MapStatus {
         for(Animal animal : animalList){
             cumulativeEnergy += animal.getEnergy();
         }
+        averageEnergyAfterGivenNumberOfEpochs.add(cumulativeEnergy/ ((double) this.numberOfAliveAnimals()));
         return cumulativeEnergy/ ((double) this.numberOfAliveAnimals());
     }
 
@@ -37,10 +47,12 @@ public class MapStatus {
         for(Animal animal : animalList){
             cumulativeNumberOfBabies += animal.getChildren().size();
         }
+        averageNumberOfBabiesAfterGivenNumberOfEpochs.add(cumulativeNumberOfBabies/ ((double) this.numberOfAliveAnimals()));
         return cumulativeNumberOfBabies/ ((double) this.numberOfAliveAnimals());
     }
 
     public double averageLifespan(){
+        averageLifespanAfterGivenNumberOfEpochs.add(this.engine.getCumulativeDeadAnimalsDays()/((double) this.engine.getNumberOfDeadAnimals()));
         return this.engine.getCumulativeDeadAnimalsDays()/((double) this.engine.getNumberOfDeadAnimals());
     }
 
@@ -63,6 +75,7 @@ public class MapStatus {
                 dominantGenotype = pair;
             }
         }
+        //System.out.println(max_size);
         return dominantGenotype;
     }
 

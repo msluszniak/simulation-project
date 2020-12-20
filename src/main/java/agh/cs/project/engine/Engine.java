@@ -52,7 +52,6 @@ public class Engine {
         List<Animal> animalList = this.map.getListOfAnimals();
         for (Animal animal : animalList) {
             animal.move(energyLoss);
-
         }
     }
 

@@ -5,6 +5,7 @@ import agh.cs.project.elements.Animal;
 import agh.cs.project.elements.Grass;
 import agh.cs.project.engine.Engine;
 import agh.cs.project.engine.EngineWrapper;
+import agh.cs.project.map.MapStatus;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -31,8 +32,7 @@ public class MapVisualizer {
         this.columns = columns;
     }
 
-
-    public void drawIMapElements(GridPane overlay, AnimalOnClick trackedAnimal) {
+    public void drawIMapElements(GridPane overlay, AnimalOnClick trackedAnimal, boolean flag, MapStatus mapStatus) {
         List<Animal> animalsToDraw = engine.getMap().getListOfAnimals();
         List<Grass> grassToDraw = engine.getMap().getListOfGrasses();
         if(trackedAnimal.getTrackedAnimal() != null)
@@ -51,15 +51,24 @@ public class MapVisualizer {
             overlay.add(rectangle ,x * squareSize, y * squareSize);
         }
         for (Animal a : animalsToDraw) {
-            int color = (int)((a.getEnergy()/(float)engine.getMap().getInitialEnergy())*255);
-            if(color > 255) color = 255;
-            if(color < 0) color = 0;
+            int energyStatus = (int)((a.getEnergy()/(float)engine.getMap().getInitialEnergy())*255);
+            Color color;
+            if(energyStatus > 255){color = Color.rgb(255,255,255);}
+            else if(energyStatus < 0){color = Color.rgb(0,0,0);}
+            else color = Color.rgb(energyStatus,energyStatus,energyStatus);
+            if(flag){
+                if(mapStatus.dominantGenotype() != null){
+                    if(a.getGenotype().equals(mapStatus.dominantGenotype().getKey())){
+                        color = Color.rgb(255,0,0);
+                    }
+                }
+            }
             //graphicsContext.setFill(Color.rgb(color, color, color));
             int x = a.getPosition().x;
             int y = a.getPosition().y;
             //graphicsContext.fillRect(x * squareSize, y * squareSize, squareSize, squareSize);
             Rectangle rectangle = new Rectangle(x * squareSize, y * squareSize, squareSize, squareSize);
-            rectangle.setFill(Color.rgb(color, color, color));
+            rectangle.setFill(color);
             rectangle.setOnMouseClicked((MouseEvent e) -> {
                 System.out.println(a.getGenotype());
                 trackedAnimal.changeAnimal(a);
@@ -70,7 +79,8 @@ public class MapVisualizer {
             });
             overlay.add(rectangle, x * squareSize, y * squareSize);
         }
-        if(engine.getActualDate() == trackedAnimal.getWhenCaught()+trackedAnimal.getTrackDuring()) {
+        if(engine.getActualDate() == trackedAnimal.getWhenCaught()+trackedAnimal.getTrackDuring() &&
+                trackedAnimal.getTrackedAnimal() != null) {
             System.out.println(trackedAnimal.getNumberOfChildren());
             System.out.println(trackedAnimal.getNumberOfDescendants());
             System.out.println(trackedAnimal.getDateOfDeath());
