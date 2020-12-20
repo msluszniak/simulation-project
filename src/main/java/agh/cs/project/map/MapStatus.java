@@ -4,18 +4,30 @@ import agh.cs.project.elements.Animal;
 import agh.cs.project.engine.Engine;
 import javafx.util.Pair;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.*;
 
 public class MapStatus {
 
     private final Engine engine;
+    private int makeTxtSummaryAtDay = -1;
 
     private static List<Integer> averageNumberOfAliveAnimalsAfterGivenNumberOfEpochs = new LinkedList<>();
     private static List<Integer> averageNumberOfGrassAfterGivenNumberOfEpochs = new LinkedList<>();
     private static List<Double> averageEnergyAfterGivenNumberOfEpochs = new LinkedList<>();
     private static List<Double> averageLifespanAfterGivenNumberOfEpochs = new LinkedList<>();
     private static List<Double> averageNumberOfBabiesAfterGivenNumberOfEpochs = new LinkedList<>();
+    private static Map<List<Integer>, Set<Animal>> dominantGenotypeAfterGivenNumberOfEpochs = new HashMap<>();
 
+
+    public void setMakeTxtSummaryAtDay(int i){
+        this.makeTxtSummaryAtDay = i;
+    }
+
+    public int getMakeTxtSummaryAtDay(){
+        return this.makeTxtSummaryAtDay;
+    }
 
     public MapStatus(Engine engine){
         this.engine = engine;
@@ -63,9 +75,16 @@ public class MapStatus {
             if(!resultMapping.containsKey(animal.getGenotype())){
                 resultMapping.put(animal.getGenotype(), new HashSet<>(Set.of(animal)));
             }
-            else {
+            if (resultMapping.containsKey(animal.getGenotype())) {
                 resultMapping.get(animal.getGenotype()).add(animal);
             }
+            if(!dominantGenotypeAfterGivenNumberOfEpochs.containsKey(animal.getGenotype())){
+                dominantGenotypeAfterGivenNumberOfEpochs.put(animal.getGenotype(), new HashSet<>(Set.of(animal)));
+            }
+            if (dominantGenotypeAfterGivenNumberOfEpochs.containsKey(animal.getGenotype())){
+                dominantGenotypeAfterGivenNumberOfEpochs.get(animal.getGenotype()).add(animal);
+            }
+
         }
         int max_size = 0;
         Map.Entry<List<Integer>, Set<Animal>> dominantGenotype = null;
@@ -78,6 +97,86 @@ public class MapStatus {
         //System.out.println(max_size);
         return dominantGenotype;
     }
+
+    public void makeFullLoopOfStatistics(){
+        this.dominantGenotype();
+        this.averageNumberOfBabies();
+        this.averageLifespan();
+        this.numberOfAliveAnimals();
+        this.numberOfGrass();
+        this.averageEnergy();
+    }
+
+    //dopisać resztę tych funkcji, potem tą jedną zwracającą plik txt i zaaplikować to do asd
+    public double averageLifespanAfterGivenNumberOfEpochs(){
+        Double cumulativeSum = 0.0;
+        for(Double num : averageLifespanAfterGivenNumberOfEpochs){
+            cumulativeSum += num;
+        }
+        return cumulativeSum/averageLifespanAfterGivenNumberOfEpochs.size();
+    }
+
+    public double averageNumberOfAliveAnimalsAfterGivenNumberOfEpochs(){
+        Double cumulativeSum = 0.0;
+        for(Integer num : averageNumberOfAliveAnimalsAfterGivenNumberOfEpochs){
+            cumulativeSum += num;
+        }
+        return cumulativeSum/((double) averageNumberOfAliveAnimalsAfterGivenNumberOfEpochs.size());
+    }
+
+    public double averageNumberOfGrassAfterGivenNumberOfEpochs(){
+        Double cumulativeSum = 0.0;
+        for(Integer num : averageNumberOfGrassAfterGivenNumberOfEpochs){
+            cumulativeSum += num;
+        }
+        return cumulativeSum/((double) averageNumberOfGrassAfterGivenNumberOfEpochs.size());
+    }
+
+    public double averageEnergyAfterGivenNumberOfEpochs(){
+        Double cumulativeSum = 0.0;
+        for(Double num : averageEnergyAfterGivenNumberOfEpochs){
+            cumulativeSum += num;
+        }
+        return cumulativeSum/((double) averageEnergyAfterGivenNumberOfEpochs.size());
+    }
+
+    public double averageNumberOfBabiesAfterGivenNumberOfEpochs(){
+        Double cumulativeSum = 0.0;
+        for(Double num : averageNumberOfBabiesAfterGivenNumberOfEpochs){
+            cumulativeSum += num;
+        }
+        return cumulativeSum/((double) averageNumberOfBabiesAfterGivenNumberOfEpochs.size());
+    }
+
+    public List<Integer> dominantGenotypeAfterGivenNumberOfEpochs(){
+        int max_size = 0;
+        Map.Entry<List<Integer>, Set<Animal>> dominantGenotype = null;
+        for(Map.Entry<List<Integer>, Set<Animal>> pair : dominantGenotypeAfterGivenNumberOfEpochs.entrySet()){
+            if(max_size < pair.getValue().size()){
+                max_size = pair.getValue().size();
+                dominantGenotype = pair;
+            }
+        }
+        //System.out.println(max_size);
+        return dominantGenotype.getKey();
+    }
+
+    public void makeTxt(String fileName){
+        try(PrintWriter out = new PrintWriter(fileName)) {
+            out.println("srednia dlugosc zycia to: " + averageNumberOfBabiesAfterGivenNumberOfEpochs());
+            out.println("srednia energia to: " + averageEnergyAfterGivenNumberOfEpochs());
+            out.println("srednia ilosc dzieci to to: " + averageNumberOfBabiesAfterGivenNumberOfEpochs());
+            out.println("srednia ilosc trawy to: " + averageNumberOfGrassAfterGivenNumberOfEpochs());
+            out.println("srednia ilosc zwierzat to: " + averageNumberOfAliveAnimalsAfterGivenNumberOfEpochs());
+            out.println("dominujacy genotyp przez n epok to: " + dominantGenotypeAfterGivenNumberOfEpochs());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
 
     public int numberOfChildren(Animal animal){
         return animal.getChildren().size();

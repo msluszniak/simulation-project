@@ -45,6 +45,7 @@ public class asd extends Application {
     private volatile boolean isSynchronized = true;
     private EngineWrapper engineWrapper;
     private static boolean flag = false;
+    private static boolean makeStatisticsToTxt = false;
     private static AnimalOnClick animalOnClick = new AnimalOnClick();
 
 
@@ -97,8 +98,8 @@ public class asd extends Application {
         createStatisticButtonDominantGenotype(pair1.getKey(), mapStatus1);
         TextField textField = createTextField(pair.getKey());
         TextField textField1 = createTextField(pair1.getKey());
-        createButtonGetValueOfTextField(pair.getKey(), textField);
-        createButtonGetValueOfTextField(pair1.getKey(), textField1);
+        createButtonGetValueOfTextField(pair.getKey(), textField, mapStatus);
+        createButtonGetValueOfTextField(pair1.getKey(), textField1, mapStatus1);
         createButtonShowAnimalsWithDominantGenotype(pair.getKey());
         createButtonShowAnimalsWithDominantGenotype(pair1.getKey());
 
@@ -142,9 +143,13 @@ public class asd extends Application {
         mapbox.getChildren().add(button);
     }
 
-    private void createButtonGetValueOfTextField(VBox mapbox, TextField textField) {
+    private void createButtonGetValueOfTextField(VBox mapbox, TextField textField, MapStatus mapStatus) {
         Button button = new Button("Wartość n");
-        button.setOnAction(e -> animalOnClick.setTrackDuring(Integer.parseInt(textField.getText())));
+        button.setOnAction(e -> {
+            animalOnClick.setTrackDuring(Integer.parseInt(textField.getText()));
+            makeStatisticsToTxt = true;
+            mapStatus.setMakeTxtSummaryAtDay(mapStatus.getEngine().getActualDate() + Integer.parseInt(textField.getText()));
+        });
         mapbox.getChildren().add(button);
     }
 
@@ -195,7 +200,13 @@ public class asd extends Application {
         MapVisualizer mapVisualizer = new MapVisualizer(engine, squareSize, rows, columns);
         mapVisualizer.drawBackground(overlay);
         mapVisualizer.drawIMapElements(overlay, trackedAnimal, flag, mapStatus);
-
+        if(makeStatisticsToTxt){
+            mapStatus.makeFullLoopOfStatistics();
+            if(mapStatus.getEngine().getActualDate() == mapStatus.getMakeTxtSummaryAtDay()){
+                mapStatus.makeTxt("test_stats.txt");
+                makeStatisticsToTxt = false;
+            }
+        }
         //if (isSynchronized) {
         // isSynchronized = false;
         // drawBackground(overlay);

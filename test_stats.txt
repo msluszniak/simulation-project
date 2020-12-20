@@ -1,0 +1,6 @@
+srednia dlugosc zycia to: 0.7389575454906543
+srednia energia to: 177.75045049716894
+srednia ilosc dzieci to to: 0.7389575454906543
+srednia ilosc trawy to: 51.9344262295082
+srednia ilosc zwierzat to: 48.18032786885246
+dominujacy genotyp przez n epok to: [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 6, 7, 7, 7, 7, 7]
