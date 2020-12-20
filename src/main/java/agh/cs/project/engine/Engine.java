@@ -1,6 +1,5 @@
 package agh.cs.project.engine;
 
-import agh.cs.project.basics.Genotype;
 import agh.cs.project.basics.Vector2d;
 import agh.cs.project.elements.Animal;
 import agh.cs.project.elements.Grass;
@@ -22,7 +21,6 @@ public class Engine {
     private final Random random = new Random();
     private int cumulativeDeadAnimalsDays = 0;
     private int numberOfDeadAnimals = 0;
-    private int endSpying = 0;
 
     public Engine(int width, int height, double jungleRation, int initialEnergy,
                   int initialNumberOfAnimals, int energyFromGrass, int energyLoss) {
@@ -32,10 +30,6 @@ public class Engine {
         this.energyLoss = energyLoss;
     }
 
-
-    public void setEndSpying(int n){
-        this.endSpying = this.actualDate + n;
-    }
 
     public void removeDeadAnimals() {
         List<Animal> animalList = this.map.getListOfAnimals();
@@ -55,7 +49,6 @@ public class Engine {
         }
     }
 
-    //tutaj trzeba usuwać silne zwierzęta przy wyciąganiu z setu, a następnie je dodać spowrotem z nową energią
     public void grassEating() {
         GrassCollection grassCollection = this.map.getGrassCollection();
         AnimalCollection animalCollection = this.map.getAnimalCollection();
@@ -102,10 +95,10 @@ public class Engine {
         LinkedList<Vector2d> emptyPlacesJungle = new LinkedList<>(map.getEmptyPlacesJungle());
         LinkedList<Vector2d> emptyPlacesOutsideJungle = new LinkedList<>(map.getEmptyPlacesOutsideJungle());
         if (emptyPlacesJungle.size() > 0) {
-            this.map.addElement(new Grass(map, emptyPlacesJungle.get(random.nextInt(emptyPlacesJungle.size()))));
+            this.map.addElement(new Grass(emptyPlacesJungle.get(random.nextInt(emptyPlacesJungle.size()))));
         }
         if (emptyPlacesOutsideJungle.size() > 0) {
-            this.map.addElement(new Grass(map, emptyPlacesOutsideJungle.get(random.nextInt(emptyPlacesOutsideJungle.size()))));
+            this.map.addElement(new Grass(emptyPlacesOutsideJungle.get(random.nextInt(emptyPlacesOutsideJungle.size()))));
         }
     }
 
@@ -122,7 +115,7 @@ public class Engine {
         this.actualDate++;
     }
 
-    public int getActualDate(){
+    public int getActualDate() {
         return this.actualDate;
     }
 
@@ -130,10 +123,17 @@ public class Engine {
         return this.map;
     }
 
-    public int getInitialNumberOfAnimals(){ return initialNumberOfAnimals;}
-    public int getNumberOfDeadAnimals(){return numberOfDeadAnimals;}
+    public int getInitialNumberOfAnimals() {
+        return initialNumberOfAnimals;
+    }
 
-    public int getCumulativeDeadAnimalsDays(){return cumulativeDeadAnimalsDays;}
+    public int getNumberOfDeadAnimals() {
+        return numberOfDeadAnimals;
+    }
+
+    public int getCumulativeDeadAnimalsDays() {
+        return cumulativeDeadAnimalsDays;
+    }
 
 
 }

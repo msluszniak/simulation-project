@@ -7,16 +7,12 @@ import agh.cs.project.elements.IMapElement;
 import java.util.*;
 
 public class AnimalCollection {
-    private Map<Vector2d, SortedSet<Animal>> animals = new HashMap<>();
+    private final Map<Vector2d, SortedSet<Animal>> animals = new HashMap<>();
 
     public AnimalCollection() {
     }
 
-    public AnimalCollection(Map<Vector2d, SortedSet<Animal>> animals) {
-        this.animals = animals;
-    }
-
-    public boolean containsKey(Vector2d position){
+    public boolean containsKey(Vector2d position) {
         return animals.containsKey(position);
     }
 
@@ -60,7 +56,7 @@ public class AnimalCollection {
     public void removeAnimal(IMapElement element) {
         Vector2d actualPosition = element.getPosition();
         if (animals.containsKey(actualPosition)) {
-            animals.get(actualPosition).remove( (Animal) element);
+            animals.get(actualPosition).remove((Animal) element);
 
             if (animals.get(actualPosition).isEmpty()) {
                 animals.remove(actualPosition);
@@ -68,7 +64,7 @@ public class AnimalCollection {
         }
     }
 
-    public void removeAnimalByPositionOld(Vector2d oldPosition, Animal animal){
+    public void removeAnimalByPositionOld(Vector2d oldPosition, Animal animal) {
         if (animals.containsKey(oldPosition)) {
             animals.get(oldPosition).remove(animal);
 
@@ -79,7 +75,7 @@ public class AnimalCollection {
     }
 
     public List<Animal> getParents(Vector2d position) {
-        SortedSet<Animal> set =  animals.get(position);
+        SortedSet<Animal> set = animals.get(position);
         if (set.size() < 2) return null;
         Iterator<Animal> iterator = set.iterator();
         return List.of(iterator.next(), iterator.next());

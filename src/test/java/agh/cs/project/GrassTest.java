@@ -17,7 +17,7 @@ public class GrassTest {
         LinkedList<Vector2d> emptyPlacesOutsideJungle = new LinkedList<>(map.getEmptyPlacesOutsideJungle());
         Random random = new Random(42);
         Vector2d randomPosition = emptyPlacesOutsideJungle.get(random.nextInt(emptyPlacesOutsideJungle.size()));
-        Grass grass = new Grass(map, randomPosition);
+        Grass grass = new Grass(randomPosition);
         map.addElement(grass);
 
         Assertions.assertEquals(grass, map.getGrassesMap().get(randomPosition));

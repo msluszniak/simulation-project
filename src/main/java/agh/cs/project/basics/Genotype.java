@@ -7,47 +7,46 @@ import java.util.Random;
 public class Genotype {
     private final ArrayList<Integer> genotype;
     private final Random random = new Random();
-    //trzeba jakoś ogarnąć najczęściej pojawiający się genotyp
 
-    public Genotype(){
+    public Genotype() {
         ArrayList<Integer> temporaryList = new ArrayList<>();
         //musi być co najmniej po jednym genie każdego rodzaju
-        for(int i=0; i < 8; i++){
+        for (int i = 0; i < 8; i++) {
             temporaryList.add(i);
         }
-        for(int i=0; i < 24; i++){
+        for (int i = 0; i < 24; i++) {
             temporaryList.add(random.nextInt(8));
         }
         Collections.sort(temporaryList);
         this.genotype = temporaryList;
     }
-    public Genotype(ArrayList<Integer> genotype){
+
+    public Genotype(ArrayList<Integer> genotype) {
         this.genotype = genotype;
     }
 
-    public Genotype mixGenotypes(Genotype parent){
+    public Genotype mixGenotypes(Genotype parent) {
         ArrayList<Integer> temporaryList = new ArrayList<>();
-        for(int i=0; i < 8; i++){
+        for (int i = 0; i < 8; i++) {
             temporaryList.add(i);
         }
         Collections.shuffle(parent.genotype, new Random());
         Collections.shuffle(this.genotype, new Random());
         int firstGroupGensSize = random.nextInt(22);
-        int secondGroupGensSize = random.nextInt(23-firstGroupGensSize);
-        for(int i = 0; i < firstGroupGensSize; i++){
+        int secondGroupGensSize = random.nextInt(23 - firstGroupGensSize);
+        for (int i = 0; i < firstGroupGensSize; i++) {
             temporaryList.add(parent.genotype.get(i));
         }
-        for(int i = firstGroupGensSize; i < firstGroupGensSize + secondGroupGensSize; i++){
+        for (int i = firstGroupGensSize; i < firstGroupGensSize + secondGroupGensSize; i++) {
             temporaryList.add(this.genotype.get(i));
         }
         int x = random.nextInt(2);
-        if(x == 0){
-            for(int i=firstGroupGensSize + secondGroupGensSize; i < 24; i++){
+        if (x == 0) {
+            for (int i = firstGroupGensSize + secondGroupGensSize; i < 24; i++) {
                 temporaryList.add(this.genotype.get(i));
             }
-        }
-        else{
-            for(int i=firstGroupGensSize + secondGroupGensSize; i < 24; i++){
+        } else {
+            for (int i = firstGroupGensSize + secondGroupGensSize; i < 24; i++) {
                 temporaryList.add(parent.genotype.get(i));
             }
         }
@@ -56,7 +55,8 @@ public class Genotype {
         Collections.sort(temporaryList);
         return new Genotype(temporaryList);
     }
-    public ArrayList<Integer> getGenotype(){
+
+    public ArrayList<Integer> getGenotype() {
         return genotype;
     }
 }

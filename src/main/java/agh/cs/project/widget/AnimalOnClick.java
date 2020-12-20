@@ -3,7 +3,6 @@ package agh.cs.project.widget;
 import agh.cs.project.elements.Animal;
 import agh.cs.project.elements.IAnimalObserver;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,10 +13,8 @@ public class AnimalOnClick implements IAnimalObserver {
     private int whenCaught;
     private int numberOfChildren;
     private int numberOfDescendants;
-    private int dateOfDeath;
 
-    public AnimalOnClick(){
-
+    public AnimalOnClick() {
     }
 
     public int getWhenCaught() {
@@ -31,28 +28,23 @@ public class AnimalOnClick implements IAnimalObserver {
         return -1;
     }
 
-    public AnimalOnClick(Animal animal){
-        this.animal = animal;
-        this.trackDuring = -1;
-    }
-
-    public void  changeAnimal(Animal newAnimal){
+    public void changeAnimal(Animal newAnimal) {
         this.animal = newAnimal;
     }
 
-    public void setTrackDuring(int time){
+    public void setTrackDuring(int time) {
         this.trackDuring = time;
     }
 
-    public void setWhenCaught(int date){
+    public void setWhenCaught(int date) {
         this.whenCaught = date;
     }
 
-    public Animal getAnimal(){
+    public Animal getAnimal() {
         return this.animal;
     }
 
-    public int getTrackDuring(){
+    public int getTrackDuring() {
         return this.trackDuring;
     }
 
@@ -73,9 +65,9 @@ public class AnimalOnClick implements IAnimalObserver {
         this.numberOfDescendants = getDescendants(animal.getChildren()).size();
     }
 
-    private Set<Animal> getDescendants(List <Animal> children){
+    private Set<Animal> getDescendants(List<Animal> children) {
         Set<Animal> descendants = new HashSet<>(children);
-        for(Animal child : children){
+        for (Animal child : children) {
             descendants.addAll(getDescendants(child.getChildren()));
         }
         return descendants;
@@ -88,7 +80,7 @@ public class AnimalOnClick implements IAnimalObserver {
 
     @Override
     public void startObserving(Animal animal) {
-        if(this.animal != null){
+        if (this.animal != null) {
             stopObserving(animal);
         }
         animal.addTrackObserver(this);

@@ -15,7 +15,7 @@ public class EngineTest {
     @Test
     public void isPositionFreeAfterEating(){
         animal.getMap().addElement(animal);
-        engine.getMap().addElement(new Grass(engine.getMap(), new Vector2d(150, 200)));
+        engine.getMap().addElement(new Grass(new Vector2d(150, 200)));
         Assertions.assertFalse(engine.getMap().getEmptyPlacesJungle().contains(new Vector2d(150, 200)));
         engine.grassEating();
         Assertions.assertEquals(120, animal.getEnergy());

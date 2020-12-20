@@ -14,12 +14,12 @@ public class JsonParserTest {
 
     @Test
     public void checkWidth(){
-        Assertions.assertEquals(15, parameters.getWidth());
+        Assertions.assertEquals(30, parameters.getWidth());
     }
 
     @Test
     public void checkHeight(){
-        Assertions.assertEquals(15, parameters.getHeight());
+        Assertions.assertEquals(30, parameters.getHeight());
     }
 
     @Test
@@ -29,7 +29,7 @@ public class JsonParserTest {
 
     @Test
     public void checkStartEnergy(){
-        Assertions.assertEquals(20, parameters.getStartEnergy());
+        Assertions.assertEquals(200, parameters.getStartEnergy());
     }
 
     @Test
@@ -39,7 +39,7 @@ public class JsonParserTest {
 
     @Test
     public void checkPlantEnergy(){
-        Assertions.assertEquals(10, parameters.getPlantEnergy());
+        Assertions.assertEquals(100, parameters.getPlantEnergy());
     }
 
 }

@@ -16,19 +16,18 @@ public class GrassCollection {
         return new LinkedList<>(collection.values());
     }
 
-    public Map<Vector2d, Grass> getGrassMap(){
+    public Map<Vector2d, Grass> getGrassMap() {
         return this.collection;
     }
 
-    public void addGrass(IMapElement element){
+    public void addGrass(IMapElement element) {
         collection.put(element.getPosition(), (Grass) element);
     }
 
-    public void removeGrass(IMapElement element){
+    public void removeGrass(IMapElement element) {
         Vector2d actualPosition = element.getPosition();
         collection.remove(actualPosition);
     }
-
 
 
 }
