@@ -1,8 +1,5 @@
 package agh.cs.project.widget;
 
-import agh.cs.project.basics.Vector2d;
-import agh.cs.project.elements.Animal;
-import agh.cs.project.elements.Grass;
 import agh.cs.project.engine.Engine;
 import agh.cs.project.engine.EngineWrapper;
 import agh.cs.project.engine.JsonParser;
@@ -11,42 +8,29 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import javafx.scene.layout.GridPane;
-import javafx.geometry.Insets;
 import javafx.util.Pair;
 
 import java.io.FileNotFoundException;
-import java.util.List;
-import java.util.function.Consumer;
 
 import static agh.cs.project.engine.JsonParser.loadParametersFromFile;
 
 public class asd extends Application {
-    private final int width = 1100;
-    private final int height = 650;
     private int rows;
     private int columns;
     private int squareSize;
-    private volatile boolean isSynchronized = true;
     private EngineWrapper engineWrapper;
-    private static boolean flag = false;
     private static boolean makeStatisticsToTxt = false;
-    private static AnimalOnClick animalOnClick = new AnimalOnClick();
+    private static final AnimalOnClick animalOnClick = new AnimalOnClick();
+    private static final AnimalOnClick animalOnClick1 = new AnimalOnClick();
 
 
     //private GraphicsContext graphicsContext;
@@ -80,8 +64,10 @@ public class asd extends Application {
         //MapVisualizer mapVisualizer1 = new MapVisualizer(engineWrapper, squareSize, rows, columns);
         MapStatus mapStatus = new MapStatus(engineWrapper.getEngine());
         MapStatus mapStatus1 = new MapStatus(engineWrapper.getEngine1());
-        Pair<VBox, Timeline> pair = createTimelineAndHBox(overlay, engineWrapper.getEngine(), mapStatus);
-        Pair<VBox, Timeline> pair1 = createTimelineAndHBox(overlay1, engineWrapper.getEngine1(), mapStatus1);
+        String fileName = "stats1.txt";
+        String fileName1 = "stats2.txt";
+        Pair<VBox, Timeline> pair = createTimelineAndHBox(overlay, engineWrapper.getEngine(), mapStatus, animalOnClick, fileName);
+        Pair<VBox, Timeline> pair1 = createTimelineAndHBox(overlay1, engineWrapper.getEngine1(), mapStatus1, animalOnClick1, fileName1);
         pair.getValue().play();
         pair1.getValue().play();
         createStatisticButtonAverageEnergy(pair.getKey(), mapStatus);
@@ -98,17 +84,18 @@ public class asd extends Application {
         createStatisticButtonDominantGenotype(pair1.getKey(), mapStatus1);
         TextField textField = createTextField(pair.getKey());
         TextField textField1 = createTextField(pair1.getKey());
-        createButtonGetValueOfTextField(pair.getKey(), textField, mapStatus);
-        createButtonGetValueOfTextField(pair1.getKey(), textField1, mapStatus1);
-        createButtonShowAnimalsWithDominantGenotype(pair.getKey());
-        createButtonShowAnimalsWithDominantGenotype(pair1.getKey());
-
+        createButtonGetValueOfTextField(pair.getKey(), textField, mapStatus, animalOnClick);
+        createButtonGetValueOfTextField(pair1.getKey(), textField1, mapStatus1, animalOnClick1);
+        createButtonShowAnimalsWithDominantGenotype(pair.getKey(),engineWrapper.getEngine(), overlay, animalOnClick, mapStatus);
+        createButtonShowAnimalsWithDominantGenotype(pair1.getKey(),engineWrapper.getEngine1(), overlay1, animalOnClick1, mapStatus1);
 
         HBox twoMaps = new HBox(pair.getKey(), pair1.getKey());
         twoMaps.setSpacing(50);
         ScrollPane scroll = new ScrollPane();
         scroll.setContent(twoMaps);
 
+        int width = 1100;
+        int height = 650;
         primaryStage.setScene(new Scene(scroll, width, height));
         //primaryStage.setScene(new Scene(twoMaps, width, height));
 
@@ -117,8 +104,8 @@ public class asd extends Application {
     }
 
 
-    private Pair<VBox, Timeline> createTimelineAndHBox(GridPane overlay, Engine engine, MapStatus mapStatus) {
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(250), e -> run(overlay, engine, animalOnClick, mapStatus)));
+    private Pair<VBox, Timeline> createTimelineAndHBox(GridPane overlay, Engine engine, MapStatus mapStatus, AnimalOnClick animalOnClick, String fileName) {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(125), e -> run(overlay, engine, animalOnClick, mapStatus, fileName)));
         timeline.setCycleCount(Animation.INDEFINITE);
         Button startButton = new Button("start button");
         startButton.setOnAction(e -> timeline.play());
@@ -135,15 +122,18 @@ public class asd extends Application {
         return textField;
     }
 
-    private void createButtonShowAnimalsWithDominantGenotype(VBox mapbox) {
+    private void createButtonShowAnimalsWithDominantGenotype(VBox mapbox, Engine engine, GridPane overlay, AnimalOnClick trackedAnimal, MapStatus mapStatus) {
         Button button = new Button("Zwierzeta z genotypem dominujacym");
         button.setOnAction(e -> {
-            flag = !flag;
+            MapVisualizer mapVisualizer = new MapVisualizer(engine, squareSize, rows, columns);
+            mapVisualizer.drawBackground(overlay);
+            mapVisualizer.drawIMapElements(overlay, trackedAnimal, true, mapStatus);
         });
         mapbox.getChildren().add(button);
     }
 
-    private void createButtonGetValueOfTextField(VBox mapbox, TextField textField, MapStatus mapStatus) {
+
+    private void createButtonGetValueOfTextField(VBox mapbox, TextField textField, MapStatus mapStatus, AnimalOnClick animalOnClick) {
         Button button = new Button("Wartość n");
         button.setOnAction(e -> {
             animalOnClick.setTrackDuring(Integer.parseInt(textField.getText()));
@@ -196,27 +186,28 @@ public class asd extends Application {
         mapBox.getChildren().add(button);
     }
 
-    private void run(GridPane overlay, Engine engine, AnimalOnClick trackedAnimal, MapStatus mapStatus) {
+    private void run(GridPane overlay, Engine engine, AnimalOnClick trackedAnimal, MapStatus mapStatus, String fileName) {
+        engine.step();
         MapVisualizer mapVisualizer = new MapVisualizer(engine, squareSize, rows, columns);
         mapVisualizer.drawBackground(overlay);
-        mapVisualizer.drawIMapElements(overlay, trackedAnimal, flag, mapStatus);
+        mapVisualizer.drawIMapElements(overlay, trackedAnimal, false, mapStatus);
         if(makeStatisticsToTxt){
             mapStatus.makeFullLoopOfStatistics();
             if(mapStatus.getEngine().getActualDate() == mapStatus.getMakeTxtSummaryAtDay()){
-                mapStatus.makeTxt("test_stats.txt");
+                mapStatus.makeTxt(fileName);
                 makeStatisticsToTxt = false;
             }
         }
+
         //if (isSynchronized) {
         // isSynchronized = false;
         // drawBackground(overlay);
         // drawIMapElements(overlay);
-        engine.step();
+        //engine.step();
         //return overlay;
         // isSynchronized = true;
         //}
     }
-
 
     public static void main(String[] args) {
         launch(args);

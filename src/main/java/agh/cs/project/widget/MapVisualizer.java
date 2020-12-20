@@ -64,6 +64,11 @@ public class MapVisualizer {
                     }
                 }
             }
+            if(trackedAnimal.getTrackedAnimal() != null){
+                if(trackedAnimal.getTrackedAnimal().equals(a)){
+                    color = Color.rgb(0,0,255);
+                }
+            }
             //graphicsContext.setFill(Color.rgb(color, color, color));
             int x = a.getPosition().x;
             int y = a.getPosition().y;
@@ -85,6 +90,7 @@ public class MapVisualizer {
             System.out.println(trackedAnimal.getNumberOfChildren());
             System.out.println(trackedAnimal.getNumberOfDescendants());
             System.out.println(trackedAnimal.getDateOfDeath());
+            trackedAnimal.stopObserving(trackedAnimal.getAnimal());
         }
     }
 
