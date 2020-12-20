@@ -67,7 +67,7 @@ public class MapVisualizer {
             rectangle.setFill(color);
             rectangle.setOnMouseClicked((MouseEvent e) -> {
                 System.out.println(a.getGenotype());
-                trackedAnimal.changeAnimal(a);
+                trackedAnimal.startObserving(a);
                 if (trackedAnimal.getAnimal() != null && trackedAnimal.getTrackDuring() != 0) {
                     trackedAnimal.setWhenCaught(engine.getActualDate());
                 }
@@ -104,6 +104,5 @@ public class MapVisualizer {
             }
         }
     }
-
-
+    
 }

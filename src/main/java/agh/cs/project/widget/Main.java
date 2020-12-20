@@ -93,7 +93,7 @@ public class Main extends Application {
 
 
     private Pair<VBox, Timeline> createTimelineAndHBox(GridPane overlay, Engine engine, MapStatus mapStatus, AnimalOnClick animalOnClick, String fileName) {
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), e -> run(overlay, engine, animalOnClick, mapStatus, fileName)));
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(125), e -> run(overlay, engine, animalOnClick, mapStatus, fileName)));
         timeline.setCycleCount(Animation.INDEFINITE);
         Button startButton = new Button("start button");
         startButton.setOnAction(e -> timeline.play());
