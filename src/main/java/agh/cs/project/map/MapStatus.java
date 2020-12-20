@@ -34,41 +34,79 @@ public class MapStatus {
     }
 
     public int numberOfAliveAnimals(){
-        averageNumberOfAliveAnimalsAfterGivenNumberOfEpochs.add(this.engine.getMap().getListOfAnimals().size());
+        return numberOfAliveAnimals(true);
+    }
+
+    public int numberOfAliveAnimals(boolean flag){
+        if(flag) {
+            averageNumberOfAliveAnimalsAfterGivenNumberOfEpochs.add(this.engine.getMap().getListOfAnimals().size());
+        }
         return this.engine.getMap().getListOfAnimals().size();
     }
 
-    public int numberOfGrass(){
-        averageNumberOfGrassAfterGivenNumberOfEpochs.add(this.engine.getMap().getListOfGrasses().size());
+    public int numberOfGrass( boolean flag){
+        if(flag) {
+            averageNumberOfGrassAfterGivenNumberOfEpochs.add(this.engine.getMap().getListOfGrasses().size());
+        }
         return this.engine.getMap().getListOfGrasses().size();
     }
 
-    public double averageEnergy(){
+    public int numberOfGrass(){
+        return numberOfGrass(true);
+    }
+
+
+    public double averageEnergy(boolean flag){
         List<Animal> animalList = this.engine.getMap().getListOfAnimals();
         int cumulativeEnergy = 0;
         for(Animal animal : animalList){
             cumulativeEnergy += animal.getEnergy();
         }
-        averageEnergyAfterGivenNumberOfEpochs.add(cumulativeEnergy/ ((double) this.numberOfAliveAnimals()));
+        if(flag && this.numberOfAliveAnimals() != 0) {
+            averageEnergyAfterGivenNumberOfEpochs.add(cumulativeEnergy / ((double) this.numberOfAliveAnimals()));
+        }
+        if(flag && this.numberOfAliveAnimals() == 0){
+            averageEnergyAfterGivenNumberOfEpochs.add(0.0);
+        }
         return cumulativeEnergy/ ((double) this.numberOfAliveAnimals());
     }
 
-    public double averageNumberOfBabies(){
+    public double averageEnergy(){
+        return averageEnergy(true);
+    }
+
+    public double averageNumberOfBabies(boolean flag){
         List<Animal> animalList = this.engine.getMap().getListOfAnimals();
         int cumulativeNumberOfBabies = 0;
         for(Animal animal : animalList){
             cumulativeNumberOfBabies += animal.getChildren().size();
         }
-        averageNumberOfBabiesAfterGivenNumberOfEpochs.add(cumulativeNumberOfBabies/ ((double) this.numberOfAliveAnimals()));
+        if(flag && this.numberOfAliveAnimals() != 0) {
+            averageNumberOfBabiesAfterGivenNumberOfEpochs.add(cumulativeNumberOfBabies / ((double) this.numberOfAliveAnimals()));
+        }
+
+        if(flag && this.numberOfAliveAnimals() == 0){
+            averageNumberOfBabiesAfterGivenNumberOfEpochs.add(0.0);
+        }
         return cumulativeNumberOfBabies/ ((double) this.numberOfAliveAnimals());
     }
 
-    public double averageLifespan(){
-        averageLifespanAfterGivenNumberOfEpochs.add(this.engine.getCumulativeDeadAnimalsDays()/((double) this.engine.getNumberOfDeadAnimals()));
+    public double averageNumberOfBabies(){
+        return averageNumberOfBabies(true);
+    }
+
+    public double averageLifespan(boolean flag){
+        if(flag && this.engine.getNumberOfDeadAnimals() != 0) {
+            averageLifespanAfterGivenNumberOfEpochs.add(this.engine.getCumulativeDeadAnimalsDays() / ((double) this.engine.getNumberOfDeadAnimals()));
+        }
         return this.engine.getCumulativeDeadAnimalsDays()/((double) this.engine.getNumberOfDeadAnimals());
     }
 
-    public Map.Entry<List<Integer>, Set<Animal>> dominantGenotype(){
+    public double averageLifespan(){
+        return averageLifespan(true);
+    }
+
+    public Map.Entry<List<Integer>, Set<Animal>> dominantGenotype(boolean flag){
         List<Animal> animals = this.engine.getMap().getListOfAnimals();
         Map<List<Integer>, Set<Animal>> resultMapping = new HashMap<>();
         for(Animal animal : animals){
@@ -78,11 +116,13 @@ public class MapStatus {
             if (resultMapping.containsKey(animal.getGenotype())) {
                 resultMapping.get(animal.getGenotype()).add(animal);
             }
-            if(!dominantGenotypeAfterGivenNumberOfEpochs.containsKey(animal.getGenotype())){
-                dominantGenotypeAfterGivenNumberOfEpochs.put(animal.getGenotype(), new HashSet<>(Set.of(animal)));
-            }
-            if (dominantGenotypeAfterGivenNumberOfEpochs.containsKey(animal.getGenotype())){
-                dominantGenotypeAfterGivenNumberOfEpochs.get(animal.getGenotype()).add(animal);
+            if(flag) {
+                if (!dominantGenotypeAfterGivenNumberOfEpochs.containsKey(animal.getGenotype())) {
+                    dominantGenotypeAfterGivenNumberOfEpochs.put(animal.getGenotype(), new HashSet<>(Set.of(animal)));
+                }
+                if (dominantGenotypeAfterGivenNumberOfEpochs.containsKey(animal.getGenotype())) {
+                    dominantGenotypeAfterGivenNumberOfEpochs.get(animal.getGenotype()).add(animal);
+                }
             }
 
         }
@@ -96,6 +136,10 @@ public class MapStatus {
         }
         //System.out.println(max_size);
         return dominantGenotype;
+    }
+
+    public Map.Entry<List<Integer>, Set<Animal>> dominantGenotype(){
+        return dominantGenotype(true);
     }
 
     public void makeFullLoopOfStatistics(){
@@ -163,7 +207,7 @@ public class MapStatus {
 
     public void makeTxt(String fileName){
         try(PrintWriter out = new PrintWriter(fileName)) {
-            out.println("srednia dlugosc zycia to: " + averageNumberOfBabiesAfterGivenNumberOfEpochs());
+            out.println("srednia dlugosc zycia to: " + averageLifespanAfterGivenNumberOfEpochs());
             out.println("srednia energia to: " + averageEnergyAfterGivenNumberOfEpochs());
             out.println("srednia ilosc dzieci to to: " + averageNumberOfBabiesAfterGivenNumberOfEpochs());
             out.println("srednia ilosc trawy to: " + averageNumberOfGrassAfterGivenNumberOfEpochs());
@@ -173,10 +217,6 @@ public class MapStatus {
             e.printStackTrace();
         }
     }
-
-
-
-
 
     public int numberOfChildren(Animal animal){
         return animal.getChildren().size();

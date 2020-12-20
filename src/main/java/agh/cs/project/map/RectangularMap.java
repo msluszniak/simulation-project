@@ -143,6 +143,8 @@ public class RectangularMap {
         return animalCollection.animalsToList();
     }
 
+    public List<Animal> getListOfStrongestAnimals(){ return animalCollection.strongestAnimalsToList();}
+
     public List<Grass> getListOfGrasses() {
         return grassCollection.grassesToList();
     }

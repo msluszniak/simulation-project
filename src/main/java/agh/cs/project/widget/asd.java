@@ -158,7 +158,7 @@ public class asd extends Application {
         Button button = new Button("Dominujący genotyp");
         button.setOnAction(e -> {
             if (mapStatus.dominantGenotype() != null) {
-                System.out.println(mapStatus.dominantGenotype().getKey());
+                System.out.println(mapStatus.dominantGenotype(false).getKey());
             } else {
                 System.out.println("Wszystkie zwierzeta sa martwe!");
             }
@@ -168,31 +168,31 @@ public class asd extends Application {
 
     private void createStatisticButtonNumberOfAliveAnimals(VBox mapBox, MapStatus mapStatus) {
         Button button = new Button("Liczba zwierząt");
-        button.setOnAction(e -> System.out.println(mapStatus.numberOfAliveAnimals()));
+        button.setOnAction(e -> System.out.println(mapStatus.numberOfAliveAnimals(false)));
         mapBox.getChildren().add(button);
     }
 
     private void createStatisticButtonNumberOfGrass(VBox mapBox, MapStatus mapStatus) {
         Button button = new Button("Liczba traw");
-        button.setOnAction(e -> System.out.println(mapStatus.numberOfGrass()));
+        button.setOnAction(e -> System.out.println(mapStatus.numberOfGrass(false)));
         mapBox.getChildren().add(button);
     }
 
     private void createStatisticButtonAverageEnergy(VBox mapBox, MapStatus mapStatus) {
         Button button = new Button("Średnia enegria");
-        button.setOnAction(e -> System.out.println(mapStatus.averageEnergy()));
+        button.setOnAction(e -> System.out.println(mapStatus.averageEnergy(false)));
         mapBox.getChildren().add(button);
     }
 
     private void createStatisticButtonAverageLifespan(VBox mapBox, MapStatus mapStatus) {
         Button button = new Button("Średnia długość życia");
-        button.setOnAction(e -> System.out.println(mapStatus.averageLifespan()));
+        button.setOnAction(e -> System.out.println(mapStatus.averageLifespan(false)));
         mapBox.getChildren().add(button);
     }
 
     private void createStatisticButtonAverageNumberOfBabies(VBox mapBox, MapStatus mapStatus) {
         Button button = new Button("Średnia liczba dzieci");
-        button.setOnAction(e -> System.out.println(mapStatus.averageNumberOfBabies()));
+        button.setOnAction(e -> System.out.println(mapStatus.averageNumberOfBabies(false)));
         mapBox.getChildren().add(button);
     }
 

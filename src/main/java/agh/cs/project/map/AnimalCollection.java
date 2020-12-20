@@ -28,6 +28,15 @@ public class AnimalCollection {
         return list;
     }
 
+    public List<Animal> strongestAnimalsToList() {
+        List<Animal> list = new LinkedList<>();
+        for (SortedSet<Animal> sortedSet : animals.values()) {
+            list.add(sortedSet.first());
+        }
+        return list;
+    }
+
+
     public Map<Vector2d, SortedSet<Animal>> getAnimalMap() {
         return this.animals;
     }

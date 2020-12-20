@@ -33,7 +33,8 @@ public class MapVisualizer {
     }
 
     public void drawIMapElements(GridPane overlay, AnimalOnClick trackedAnimal, boolean flag, MapStatus mapStatus) {
-        List<Animal> animalsToDraw = engine.getMap().getListOfAnimals();
+        //List<Animal> animalsToDraw = engine.getMap().getListOfAnimals();
+        List<Animal> animalsToDraw = engine.getMap().getListOfStrongestAnimals();
         List<Grass> grassToDraw = engine.getMap().getListOfGrasses();
         if(trackedAnimal.getTrackedAnimal() != null)
             trackedAnimal.update();
