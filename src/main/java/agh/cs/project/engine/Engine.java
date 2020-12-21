@@ -34,9 +34,11 @@ public class Engine {
     public void removeDeadAnimals() {
         List<Animal> animalList = this.map.getListOfAnimals();
         for (Animal animal : animalList) {
-            if (animal.isAlreadyDead(this.actualDate)) {
-                this.numberOfDeadAnimals++;
-                this.cumulativeDeadAnimalsDays += this.actualDate - animal.getBirthDate();
+            if(animal.isAlreadyDead(this.actualDate)) {
+                if(animal.getEnergy() > -energyLoss) {
+                    this.numberOfDeadAnimals++;
+                    this.cumulativeDeadAnimalsDays += this.actualDate - animal.getBirthDate();
+                }
                 this.map.removeElement(animal);
             }
 

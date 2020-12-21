@@ -31,6 +31,7 @@ public class Main extends Application {
     private static boolean makeStatisticsToTxt = false;
     private static final AnimalOnClick animalOnClick = new AnimalOnClick();
     private static final AnimalOnClick animalOnClick1 = new AnimalOnClick();
+    private boolean isSynchronized = true;
 
 
     @Override
@@ -83,7 +84,7 @@ public class Main extends Application {
 
 
     private Pair<VBox, Timeline> createTimelineAndHBox(GridPane overlay, Engine engine, MapStatus mapStatus, AnimalOnClick animalOnClick, String fileName) {
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(125), e -> run(overlay, engine, animalOnClick, mapStatus, fileName)));
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(150), e -> run(overlay, engine, animalOnClick, mapStatus, fileName)));
         timeline.setCycleCount(Animation.INDEFINITE);
         Button startButton = new Button("start button");
         startButton.setOnAction(e -> timeline.play());
@@ -122,10 +123,16 @@ public class Main extends Application {
     }
 
     private void run(GridPane overlay, Engine engine, AnimalOnClick trackedAnimal, MapStatus mapStatus, String fileName) {
-        engine.step();
-        MapVisualizer mapVisualizer = new MapVisualizer(engine, squareSize, rows, columns);
-        mapVisualizer.drawBackground(overlay);
-        mapVisualizer.drawIMapElements(overlay, trackedAnimal, false, mapStatus);
+
+        if(isSynchronized) {
+            isSynchronized = false;
+            engine.step();
+            MapVisualizer mapVisualizer = new MapVisualizer(engine, squareSize, rows, columns);
+            mapVisualizer.drawBackground(overlay);
+            mapVisualizer.drawIMapElements(overlay, trackedAnimal, false, mapStatus);
+            isSynchronized = true;
+        }
+
         if (makeStatisticsToTxt) {
             mapStatus.makeFullLoopOfStatistics();
             if (mapStatus.getEngine().getActualDate() == mapStatus.getMakeTxtSummaryAtDay()) {
