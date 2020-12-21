@@ -158,8 +158,6 @@ public class Animal implements IMapElement, IDeadAnimalOnPosition {
             int kidEnergy = this.energy / 4 + parent.energy / 4;
             this.energy = this.energy - this.energy / 4;
             parent.energy = parent.energy - parent.energy / 4;
-            //parent.changeEnergy(parent.energy/4);
-            //this.changeEnergy(this.energy / 4);
             Vector2d babyPosition = map.getProperPositionForBabyAnimal(this.getPosition()).getCorrectPosition(map.getLowerLeft(), map.getUpperRight());
             Genotype kidGenotype = this.genotype.mixGenotypes(parent.genotype);
             Animal kid = new Animal(this.map, babyPosition, kidGenotype, kidEnergy, date);

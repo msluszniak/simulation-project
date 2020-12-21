@@ -23,37 +23,6 @@ public class Genotype {
         this.genotype = genotype;
     }
 
-//    public Genotype mixGenotypes(Genotype parent) {
-//        ArrayList<Integer> temporaryList = new ArrayList<>();
-//        for (int i = 0; i < 8; i++) {
-//            temporaryList.add(i);
-//        }
-//        Collections.shuffle(parent.genotype, new Random());
-//        Collections.shuffle(this.genotype, new Random());
-//        int firstGroupGensSize = random.nextInt(22);
-//        int secondGroupGensSize = random.nextInt(23 - firstGroupGensSize);
-//        for (int i = 0; i < firstGroupGensSize; i++) {
-//            temporaryList.add(parent.genotype.get(i));
-//        }
-//        for (int i = firstGroupGensSize; i < firstGroupGensSize + secondGroupGensSize; i++) {
-//            temporaryList.add(this.genotype.get(i));
-//        }
-//        int x = random.nextInt(2);
-//        if (x == 0) {
-//            for (int i = firstGroupGensSize + secondGroupGensSize; i < 24; i++) {
-//                temporaryList.add(this.genotype.get(i));
-//            }
-//        } else {
-//            for (int i = firstGroupGensSize + secondGroupGensSize; i < 24; i++) {
-//                temporaryList.add(parent.genotype.get(i));
-//            }
-//        }
-//        Collections.sort(parent.genotype);
-//        Collections.sort(this.genotype);
-//        Collections.sort(temporaryList);
-//        return new Genotype(temporaryList);
-//    }
-
     public Genotype mixGenotypes(Genotype parent){
         ArrayList<Integer> temporaryList = new ArrayList<>();
         int x = random.nextInt(2);
@@ -108,7 +77,6 @@ public class Genotype {
             if(getMin(intArray) > 0);
             flag = false;
         }
-        //return rawGenotype;
     }
 
     public int getMin(int[] inputArray){

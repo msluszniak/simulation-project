@@ -6,7 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 
 public class MapBuilder {
-    private MapStatus mapStatus;
+    private final MapStatus mapStatus;
     Engine engine;
     String fileName;
     AnimalOnClick animalOnClick;
