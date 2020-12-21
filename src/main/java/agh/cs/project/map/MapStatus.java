@@ -78,7 +78,7 @@ public class MapStatus {
     }
 
     public double averageNumberOfBabies(boolean flag) {
-        List<Animal> animalList = this.engine.getMap().getListOfAnimals();
+        List<Animal> animalList = this.engine.getMap().getListOfAliveAnimals();
         int cumulativeNumberOfBabies = 0;
         for (Animal animal : animalList) {
             cumulativeNumberOfBabies += animal.getChildren().size();
@@ -90,7 +90,9 @@ public class MapStatus {
         if (flag && this.numberOfAliveAnimals() == 0) {
             averageNumberOfBabiesAfterGivenNumberOfEpochs.add(0.0);
         }
-        return cumulativeNumberOfBabies / ((double) this.numberOfAliveAnimals());
+        if(this.numberOfAliveAnimals() != 0)
+            return cumulativeNumberOfBabies / ((double) this.numberOfAliveAnimals());
+        return 0;
     }
 
     public double averageNumberOfBabies() {

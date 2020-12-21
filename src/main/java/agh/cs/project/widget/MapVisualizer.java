@@ -31,9 +31,9 @@ public class MapVisualizer {
         if (trackedAnimal.getTrackedAnimal() != null) {
             trackedAnimal.update();
         }
-        for (Grass g : grassToDraw) {
-            int x = g.getPosition().x;
-            int y = g.getPosition().y;
+        for (Grass grass : grassToDraw) {
+            int x = grass.getPosition().x;
+            int y = grass.getPosition().y;
             Rectangle rectangle = new Rectangle(x * squareSize, y * squareSize, squareSize, squareSize);
             rectangle.setFill(Color.rgb(94, 116, 57));
             rectangle.setOnMouseClicked((MouseEvent e) -> {
@@ -41,12 +41,12 @@ public class MapVisualizer {
             });
             overlay.add(rectangle, x * squareSize, y * squareSize);
         }
-        for (Animal a : animalsToDraw) {
-            if(a.isAlreadyDead(engine.getActualDate())){
-                engine.getMap().removeElement(a);
+        for (Animal animal : animalsToDraw) {
+            if(animal.isAlreadyDead(engine.getActualDate())){
+                engine.getMap().removeElement(animal);
                 continue;
             }
-            int energyStatus = (int) ((a.getEnergy() / (float) engine.getMap().getInitialEnergy()) * 255);
+            int energyStatus = (int) ((animal.getEnergy() / (float) engine.getMap().getInitialEnergy()) * 255);
             Color color;
             if (energyStatus > 255) {
                 color = Color.rgb(255, 255, 255);
@@ -55,23 +55,23 @@ public class MapVisualizer {
             } else color = Color.rgb(energyStatus, energyStatus, energyStatus);
             if (flag) {
                 if (mapStatus.dominantGenotype() != null) {
-                    if (a.getGenotype().equals(mapStatus.dominantGenotype().getKey())) {
+                    if (animal.getGenotype().equals(mapStatus.dominantGenotype().getKey())) {
                         color = Color.rgb(255, 0, 0);
                     }
                 }
             }
             if (trackedAnimal.getTrackedAnimal() != null) {
-                if (trackedAnimal.getTrackedAnimal().equals(a)) {
+                if (trackedAnimal.getTrackedAnimal().equals(animal)) {
                     color = Color.rgb(0, 0, 255);
                 }
             }
-            int x = a.getPosition().x;
-            int y = a.getPosition().y;
+            int x = animal.getPosition().x;
+            int y = animal.getPosition().y;
             Rectangle rectangle = new Rectangle(x * squareSize, y * squareSize, squareSize, squareSize);
             rectangle.setFill(color);
             rectangle.setOnMouseClicked((MouseEvent e) -> {
-                System.out.println(a.getGenotype());
-                trackedAnimal.startObserving(a);
+                System.out.println(animal.getGenotype());
+                trackedAnimal.startObserving(animal);
                 if (trackedAnimal.getAnimal() != null && trackedAnimal.getTrackDuring() != 0) {
                     trackedAnimal.setWhenCaught(engine.getActualDate());
                 }

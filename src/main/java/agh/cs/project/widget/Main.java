@@ -111,7 +111,7 @@ public class Main extends Application {
     }
 
     private void createButtonShowAnimalsWithDominantGenotype(VBox mapbox, Engine engine, GridPane overlay, AnimalOnClick trackedAnimal, MapStatus mapStatus) {
-        Button button = new Button("Zwierzeta z genotypem dominujacym");
+        Button button = new Button("Zwierzęta z genotypem dominującym");
         button.setOnAction(e -> {
             MapVisualizer mapVisualizer = new MapVisualizer(engine, squareSize, rows, columns);
             mapVisualizer.drawBackground(overlay);
