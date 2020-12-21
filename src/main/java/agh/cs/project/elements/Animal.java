@@ -35,13 +35,14 @@ public class Animal implements IMapElement, IDeadAnimalOnPosition {
         this.deathDate = -1;
         generalId++;
         this.id = generalId;
+        //this.addEnergyObserver(map);
     }
 
     public Animal(Animal copy) {
         this.map = copy.map;
         this.position = copy.position;
-        this.addObserver(map);
-        this.addEnergyObserver(map);
+        //this.addObserver(map);
+        //this.addEnergyObserver(map);
         this.genotype = copy.genotype;
         this.energy = copy.energy;
         this.birthDate = copy.birthDate;
@@ -65,6 +66,7 @@ public class Animal implements IMapElement, IDeadAnimalOnPosition {
     }
 
     public void energyChanged(Animal oldAnimal) {
+        //for(RectangularMap energyObserver: energyObserverList)
             map.energyChanged(oldAnimal, this);
     }
 
@@ -159,6 +161,8 @@ public class Animal implements IMapElement, IDeadAnimalOnPosition {
             int kidEnergy = this.energy / 4 + parent.energy / 4;
             this.energy = this.energy - this.energy / 4;
             parent.energy = parent.energy - parent.energy / 4;
+            //parent.changeEnergy(parent.energy/4);
+            //this.changeEnergy(this.energy / 4);
             Vector2d babyPosition = map.getProperPositionForBabyAnimal(this.getPosition()).getCorrectPosition(map.getLowerLeft(), map.getUpperRight());
             Genotype kidGenotype = this.genotype.mixGenotypes(parent.genotype);
             Animal kid = new Animal(this.map, babyPosition, kidGenotype, kidEnergy, date);

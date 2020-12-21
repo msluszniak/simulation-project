@@ -72,6 +72,8 @@ public class AnimalTest {
         animal.getMap().addElement(newAnimal);
         Animal kid = animal.reproduce(newAnimal, 5);
         animal.getMap().addElement(kid);
+//        for(int i = 0; i < animal.getMap().getListOfAnimals().size(); i++)
+//            System.out.println(animal.getMap().getListOfAnimals().get(i).getId());
         Assertions.assertEquals(3, map.getListOfAnimals().size());
         Vector2d position = animal.getPosition();
         animal.move(5);

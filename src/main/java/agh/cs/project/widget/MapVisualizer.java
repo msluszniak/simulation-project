@@ -76,9 +76,9 @@ public class MapVisualizer {
         }
         if (engine.getActualDate() == trackedAnimal.getWhenCaught() + trackedAnimal.getTrackDuring() &&
                 trackedAnimal.getTrackedAnimal() != null) {
-            System.out.println(trackedAnimal.getNumberOfChildren());
-            System.out.println(trackedAnimal.getNumberOfDescendants());
-            System.out.println(trackedAnimal.getDateOfDeath());
+            System.out.println("Liczba dzieci: " + trackedAnimal.getNumberOfChildren());
+            System.out.println("Liczba potomkow: " + trackedAnimal.getNumberOfDescendants());
+            System.out.println("dzie: " + trackedAnimal.getDateOfDeath());
             trackedAnimal.stopObserving(trackedAnimal.getAnimal());
         }
     }
@@ -104,5 +104,5 @@ public class MapVisualizer {
             }
         }
     }
-    
+
 }

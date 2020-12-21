@@ -39,6 +39,8 @@ public class Engine {
                 this.cumulativeDeadAnimalsDays += this.actualDate - animal.getBirthDate();
                 this.map.removeElement(animal);
             }
+            //System.out.println(animal.getEnergy());
+            //System.out.println(animal.getId());
         }
     }
 
