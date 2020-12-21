@@ -39,8 +39,7 @@ public class Engine {
                 this.cumulativeDeadAnimalsDays += this.actualDate - animal.getBirthDate();
                 this.map.removeElement(animal);
             }
-            //System.out.println(animal.getEnergy());
-            //System.out.println(animal.getId());
+
         }
     }
 
@@ -58,6 +57,7 @@ public class Engine {
         for (SortedSet<Animal> set : animalCollection.getAnimalMap().values()) {
             List<Animal> strongestAnimals = new LinkedList<>();
             int strongestAnimalEnergy = set.first().getEnergy();
+            if(strongestAnimalEnergy <= 0) continue;
             for (Object strongAnimal : set) {
                 if (((Animal) strongAnimal).getEnergy() == strongestAnimalEnergy) {
                     strongestAnimals.add((Animal) strongAnimal);

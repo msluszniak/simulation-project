@@ -16,10 +16,23 @@ public class AnimalCollection {
         return animals.containsKey(position);
     }
 
+
     public List<Animal> animalsToList() {
         List<Animal> list = new LinkedList<>();
         for (SortedSet<Animal> sortedSet : animals.values()) {
             list.addAll(sortedSet);
+        }
+        return list;
+    }
+
+    public List<Animal> aliveAnimalsToList(){
+        List<Animal> list = new LinkedList<>();
+        for (SortedSet<Animal> sortedSet : animals.values()){
+            for(Animal animal : sortedSet){
+                if(animal.getEnergy() > 0){
+                    list.add(animal);
+                }
+            }
         }
         return list;
     }
@@ -80,5 +93,6 @@ public class AnimalCollection {
         Iterator<Animal> iterator = set.iterator();
         return List.of(iterator.next(), iterator.next());
     }
+
 
 }

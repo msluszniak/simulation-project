@@ -67,9 +67,12 @@ public class RectangularMap {
         return new Vector2d(x, y);
     }
 
+
     public void energyChanged(Animal oldAnimal, Animal animal) {
-        this.animalCollection.getAnimalMap().get(animal.getPosition()).remove(oldAnimal);
-        this.animalCollection.getAnimalMap().get(animal.getPosition()).add(animal);
+        //this.animalCollection.getAnimalMap().get(animal.getPosition()).remove(oldAnimal);
+        //this.animalCollection.getAnimalMap().get(animal.getPosition()).add(animal);
+        this.animalCollection.removeAnimal(oldAnimal);
+        this.animalCollection.addAnimal(animal);
     }
 
 
@@ -142,6 +145,8 @@ public class RectangularMap {
     public List<Animal> getListOfAnimals() {
         return animalCollection.animalsToList();
     }
+
+    public List<Animal> getListOfAliveAnimals(){return animalCollection.aliveAnimalsToList();}
 
     public List<Animal> getListOfStrongestAnimals(){ return animalCollection.strongestAnimalsToList();}
 

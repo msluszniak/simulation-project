@@ -38,9 +38,9 @@ public class MapStatus {
 
     public int numberOfAliveAnimals(boolean flag) {
         if (flag) {
-            averageNumberOfAliveAnimalsAfterGivenNumberOfEpochs.add(this.engine.getMap().getListOfAnimals().size());
+            averageNumberOfAliveAnimalsAfterGivenNumberOfEpochs.add(this.engine.getMap().getListOfAliveAnimals().size());
         }
-        return this.engine.getMap().getListOfAnimals().size();
+        return this.engine.getMap().getListOfAliveAnimals().size();
     }
 
     public int numberOfGrass(boolean flag) {
@@ -59,6 +59,7 @@ public class MapStatus {
         List<Animal> animalList = this.engine.getMap().getListOfAnimals();
         int cumulativeEnergy = 0;
         for (Animal animal : animalList) {
+            if(animal.getEnergy() >= 0)
             cumulativeEnergy += animal.getEnergy();
         }
         if (flag && this.numberOfAliveAnimals() != 0) {
@@ -67,7 +68,9 @@ public class MapStatus {
         if (flag && this.numberOfAliveAnimals() == 0) {
             averageEnergyAfterGivenNumberOfEpochs.add(0.0);
         }
-        return cumulativeEnergy / ((double) this.numberOfAliveAnimals());
+        if(this.numberOfAliveAnimals() > 0)
+            return cumulativeEnergy / ((double) this.numberOfAliveAnimals());
+        return 0;
     }
 
     public double averageEnergy() {
