@@ -37,16 +37,16 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         try {
-            JsonParser parameters = loadParametersFromFile();
+            JsonParser parameters = loadParametersFromFile("\\Users\\DELL\\IdeaProjects\\ProjektSymulacjaŚwiata\\input.json");
+            parameters.checkIfJsonIsValid();
             this.engineWrapper = new EngineWrapper(parameters.getWidth(), parameters.getHeight(), parameters.getPlantEnergy(), parameters.getStartEnergy(), parameters.getJungleRatio(), parameters.getInitialNumberOfAnimals(), parameters.getMoveEnergy());
+            this.rows = parameters.getWidth();
+            this.columns = parameters.getHeight();
         } catch (IllegalArgumentException | FileNotFoundException ex) {
             System.out.println(ex);
         }
-        JsonParser optionsParser = loadParametersFromFile();
-        this.rows = optionsParser.getWidth();
-        this.columns = optionsParser.getHeight();
-        this.squareSize = 15;
 
+        this.squareSize = 15;
 
         primaryStage.setTitle("World Simulation");
         GridPane overlay = new GridPane();
@@ -59,30 +59,20 @@ public class Main extends Application {
         Pair<VBox, Timeline> pair1 = createTimelineAndHBox(overlay1, engineWrapper.getEngine1(), mapStatus1, animalOnClick1, fileName1);
         pair.getValue().play();
         pair1.getValue().play();
-        createStatisticButtonAverageEnergy(pair.getKey(), mapStatus);
-        createStatisticButtonAverageEnergy(pair1.getKey(), mapStatus1);
-        createStatisticButtonNumberOfAliveAnimals(pair.getKey(), mapStatus);
-        createStatisticButtonNumberOfAliveAnimals(pair1.getKey(), mapStatus1);
-        createStatisticButtonNumberOfGrass(pair.getKey(), mapStatus);
-        createStatisticButtonNumberOfGrass(pair1.getKey(), mapStatus1);
-        createStatisticButtonAverageLifespan(pair.getKey(), mapStatus);
-        createStatisticButtonAverageLifespan(pair1.getKey(), mapStatus1);
-        createStatisticButtonAverageNumberOfBabies(pair.getKey(), mapStatus);
-        createStatisticButtonAverageNumberOfBabies(pair1.getKey(), mapStatus1);
-        createStatisticButtonDominantGenotype(pair.getKey(), mapStatus);
-        createStatisticButtonDominantGenotype(pair1.getKey(), mapStatus1);
-        TextField textField = createTextField(pair.getKey());
-        TextField textField1 = createTextField(pair1.getKey());
-        createButtonGetValueOfTextField(pair.getKey(), textField, mapStatus, animalOnClick);
-        createButtonGetValueOfTextField(pair1.getKey(), textField1, mapStatus1, animalOnClick1);
+        MapBuilder mapBuilder = new MapBuilder(animalOnClick, mapStatus, engineWrapper.getEngine(), fileName);
+        VBox map = mapBuilder.makeMap(pair.getKey());
+        MapBuilder mapBuilder1 = new MapBuilder(animalOnClick1, mapStatus1, engineWrapper.getEngine1(), fileName1);
+        VBox map1 = mapBuilder1.makeMap(pair1.getKey());
+        TextField textField = createTextField(map);
+        TextField textField1 = createTextField(map1);
+        createButtonGetValueOfTextField(map, textField, mapStatus, animalOnClick);
+        createButtonGetValueOfTextField(map1, textField1, mapStatus1, animalOnClick1);
         createButtonShowAnimalsWithDominantGenotype(pair.getKey(), engineWrapper.getEngine(), overlay, animalOnClick, mapStatus);
         createButtonShowAnimalsWithDominantGenotype(pair1.getKey(), engineWrapper.getEngine1(), overlay1, animalOnClick1, mapStatus1);
-
-        HBox twoMaps = new HBox(pair.getKey(), pair1.getKey());
+        HBox twoMaps = new HBox(map, map1);
         twoMaps.setSpacing(50);
         ScrollPane scroll = new ScrollPane();
         scroll.setContent(twoMaps);
-
         int width = 1100;
         int height = 650;
         primaryStage.setScene(new Scene(scroll, width, height));
@@ -129,49 +119,6 @@ public class Main extends Application {
             mapStatus.setMakeTxtSummaryAtDay(mapStatus.getEngine().getActualDate() + Integer.parseInt(textField.getText()));
         });
         mapbox.getChildren().add(button);
-    }
-
-
-    private void createStatisticButtonDominantGenotype(VBox mapBox, MapStatus mapStatus) {
-        Button button = new Button("Dominujący genotyp");
-        button.setOnAction(e -> {
-            if (mapStatus.dominantGenotype() != null) {
-                System.out.println(mapStatus.dominantGenotype(false).getKey());
-            } else {
-                System.out.println("Wszystkie zwierzeta sa martwe!");
-            }
-        });
-        mapBox.getChildren().add(button);
-    }
-
-    private void createStatisticButtonNumberOfAliveAnimals(VBox mapBox, MapStatus mapStatus) {
-        Button button = new Button("Liczba zwierząt");
-        button.setOnAction(e -> System.out.println(mapStatus.numberOfAliveAnimals(false)));
-        mapBox.getChildren().add(button);
-    }
-
-    private void createStatisticButtonNumberOfGrass(VBox mapBox, MapStatus mapStatus) {
-        Button button = new Button("Liczba traw");
-        button.setOnAction(e -> System.out.println(mapStatus.numberOfGrass(false)));
-        mapBox.getChildren().add(button);
-    }
-
-    private void createStatisticButtonAverageEnergy(VBox mapBox, MapStatus mapStatus) {
-        Button button = new Button("Średnia enegria");
-        button.setOnAction(e -> System.out.println(mapStatus.averageEnergy(false)));
-        mapBox.getChildren().add(button);
-    }
-
-    private void createStatisticButtonAverageLifespan(VBox mapBox, MapStatus mapStatus) {
-        Button button = new Button("Średnia długość życia");
-        button.setOnAction(e -> System.out.println(mapStatus.averageLifespan(false)));
-        mapBox.getChildren().add(button);
-    }
-
-    private void createStatisticButtonAverageNumberOfBabies(VBox mapBox, MapStatus mapStatus) {
-        Button button = new Button("Średnia liczba dzieci");
-        button.setOnAction(e -> System.out.println(mapStatus.averageNumberOfBabies(false)));
-        mapBox.getChildren().add(button);
     }
 
     private void run(GridPane overlay, Engine engine, AnimalOnClick trackedAnimal, MapStatus mapStatus, String fileName) {

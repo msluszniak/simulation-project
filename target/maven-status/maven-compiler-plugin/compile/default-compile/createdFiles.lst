@@ -2,6 +2,7 @@ agh\cs\project\widget\AnimalOnClick.class
 agh\cs\project\basics\Genotype.class
 agh\cs\project\map\MapStatus.class
 agh\cs\project\widget\MapVisualizer.class
+agh\cs\project\widget\MapBuilder.class
 agh\cs\project\elements\IAnimalObserver.class
 agh\cs\project\engine\EngineWrapper.class
 agh\cs\project\basics\Vector2d.class

@@ -1,6 +1,6 @@
-srednia dlugosc zycia to: 81.08147282621623
-srednia energia to: 154.76280885643803
-srednia ilosc dzieci to to: 1.546138170076471
-srednia ilosc trawy to: 27.85576923076923
-srednia ilosc zwierzat to: 145.32337246531483
-dominujacy genotyp przez n epok to: [0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 7, 7]
+srednia dlugosc zycia to: 262.2129007921105
+srednia energia to: 87.80055530307655
+srednia ilosc dzieci to to: 2.2383154284669273
+srednia ilosc trawy to: 13.716
+srednia ilosc zwierzat to: 192.88534107402032
+dominujacy genotyp przez n epok to: [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 7]

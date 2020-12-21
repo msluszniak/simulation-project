@@ -15,9 +15,9 @@ public class JsonParser {
     private int plantEnergy;
     private int initialNumberOfAnimals;
 
-    public static JsonParser loadParametersFromFile() throws FileNotFoundException, IllegalArgumentException {
+    public static JsonParser loadParametersFromFile(String fileName) throws FileNotFoundException, IllegalArgumentException {
         Gson gson = new Gson();
-        return gson.fromJson(new FileReader("\\Users\\DELL\\IdeaProjects\\ProjektSymulacjaŚwiata\\input.json"), JsonParser.class);
+        return gson.fromJson(new FileReader(fileName), JsonParser.class);
     }
 
     public int getWidth() {
@@ -46,6 +46,15 @@ public class JsonParser {
 
     public int getInitialNumberOfAnimals() {
         return initialNumberOfAnimals;
+    }
+
+    public void checkIfJsonIsValid() throws IllegalArgumentException{
+        if(this.width <= 0) {throw new IllegalArgumentException("Szerokosc mapy musi byc dodatnia!");}
+        if(this.height <= 0) {throw new IllegalArgumentException("Wysokosc mapy musi byc dodatnia!");}
+        if(this.moveEnergy <= 0) {throw new IllegalArgumentException("Animale nie moga zyskiwac energi tylko na chodzeniu");}
+        if(this.jungleRatio <= 0) {throw new IllegalArgumentException("Dzungla musi istniec!");}
+        if(this.startEnergy <= 0){ throw new IllegalArgumentException("Nie mozna tworzyc zombie animali!");}
+        if(this.initialNumberOfAnimals < 0){throw new IllegalArgumentException("Nie moze byc ujemnej ilosci animali na mapie!");}
     }
 
 }
