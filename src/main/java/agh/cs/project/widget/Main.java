@@ -38,7 +38,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         try {
-            JsonParser parameters = loadParametersFromFile("\\Users\\DELL\\IdeaProjects\\ProjektSymulacjaŚwiata\\input.json");
+            JsonParser parameters = loadParametersFromFile("src\\main\\resources\\input.json");
             parameters.checkIfJsonIsValid();
             this.engineWrapper = new EngineWrapper(parameters.getWidth(), parameters.getHeight(), parameters.getPlantEnergy(), parameters.getStartEnergy(), parameters.getJungleRatio(), parameters.getInitialNumberOfAnimals(), parameters.getMoveEnergy());
             this.rows = parameters.getWidth();

@@ -20,6 +20,7 @@ public class JsonParser {
         return gson.fromJson(new FileReader(fileName), JsonParser.class);
     }
 
+
     public int getWidth() {
         return width;
     }
