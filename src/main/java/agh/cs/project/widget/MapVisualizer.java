@@ -36,9 +36,7 @@ public class MapVisualizer {
             int y = grass.getPosition().y;
             Rectangle rectangle = new Rectangle(x * squareSize, y * squareSize, squareSize, squareSize);
             rectangle.setFill(Color.rgb(94, 116, 57));
-            rectangle.setOnMouseClicked((MouseEvent e) -> {
-                System.out.println("Just grass, nothing special");
-            });
+            rectangle.setOnMouseClicked((MouseEvent e) -> System.out.println("Just grass, nothing special"));
             overlay.add(rectangle, x * squareSize, y * squareSize);
         }
         for (Animal animal : animalsToDraw) {

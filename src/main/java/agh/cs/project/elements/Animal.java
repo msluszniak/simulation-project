@@ -35,14 +35,11 @@ public class Animal implements IMapElement, IDeadAnimalOnPosition {
         this.deathDate = -1;
         generalId++;
         this.id = generalId;
-        //this.addEnergyObserver(map);
     }
 
     public Animal(Animal copy) {
         this.map = copy.map;
         this.position = copy.position;
-        //this.addObserver(map);
-        //this.addEnergyObserver(map);
         this.genotype = copy.genotype;
         this.energy = copy.energy;
         this.birthDate = copy.birthDate;

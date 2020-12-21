@@ -28,10 +28,6 @@ public class AnimalOnClick implements IAnimalObserver {
         return -1;
     }
 
-    public void changeAnimal(Animal newAnimal) {
-        this.animal = newAnimal;
-    }
-
     public void setTrackDuring(int time) {
         this.trackDuring = time;
     }
